@@ -22,6 +22,7 @@
       appId: "{{ config.FIREBASE_APP_ID }}",
       measurementId: "{{ config.FIREBASE_MEASUREMENT_ID }}"
     };
+    console.log("Firebase Init Config:", { ...firebaseConfig, apiKey: firebaseConfig.apiKey ? "***" + firebaseConfig.apiKey.slice(-4) : "MISSING!" });
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     window.firebaseApp = app;
