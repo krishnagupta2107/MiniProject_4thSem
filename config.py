@@ -20,6 +20,16 @@ class Config:
     PORT  = int(os.environ.get("PORT", 5000))
     DEBUG = os.environ.get("FLASK_ENV", "development") == "development"
 
+    # Firebase integration mapping
+    # Note: Using dotenv internally
+    FIREBASE_API_KEY = os.environ.get("FIREBASE_API_KEY", "")
+    FIREBASE_AUTH_DOMAIN = os.environ.get("FIREBASE_AUTH_DOMAIN", "resume-matcher-e022f.firebaseapp.com")
+    FIREBASE_PROJECT_ID = os.environ.get("FIREBASE_PROJECT_ID", "resume-matcher-e022f")
+    FIREBASE_STORAGE_BUCKET = os.environ.get("FIREBASE_STORAGE_BUCKET", "resume-matcher-e022f.firebasestorage.app")
+    FIREBASE_MESSAGING_SENDER_ID = os.environ.get("FIREBASE_MESSAGING_SENDER_ID", "338795102474")
+    FIREBASE_APP_ID = os.environ.get("FIREBASE_APP_ID", "1:338795102474:web:83979f5dbdad2942f9faf3")
+    FIREBASE_MEASUREMENT_ID = os.environ.get("FIREBASE_MEASUREMENT_ID", "G-S53PY3YNVR")
+
     # security configurations
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'

@@ -10,17 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet"/>
 
-  <script type="module">
+    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
     const firebaseConfig = {
-      apiKey: "AIzaSyAyh86COQ4soCsdWHrFk4i4UaFlo4AkOJ4",
-      authDomain: "resume-matcher-e022f.firebaseapp.com",
-      projectId: "resume-matcher-e022f",
-      storageBucket: "resume-matcher-e022f.firebasestorage.app",
-      messagingSenderId: "338795102474",
-      appId: "1:338795102474:web:83979f5dbdad2942f9faf3",
-      measurementId: "G-S53PY3YNVR"
+      apiKey: "{{ config.FIREBASE_API_KEY }}",
+      authDomain: "{{ config.FIREBASE_AUTH_DOMAIN }}",
+      projectId: "{{ config.FIREBASE_PROJECT_ID }}",
+      storageBucket: "{{ config.FIREBASE_STORAGE_BUCKET }}",
+      messagingSenderId: "{{ config.FIREBASE_MESSAGING_SENDER_ID }}",
+      appId: "{{ config.FIREBASE_APP_ID }}",
+      measurementId: "{{ config.FIREBASE_MEASUREMENT_ID }}"
     };
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
