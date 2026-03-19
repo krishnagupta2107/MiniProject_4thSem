@@ -60,7 +60,7 @@ def login():
         user     = User.query_by_email(email)
 
         if user and user.check_password(password):
-            login_user(user)
+            login_user(user, remember=True)
             flash(f"Welcome back, {user.full_name}!", "success")
             next_page = request.args.get("next")
             return redirect(next_page or url_for("main.dashboard"))
@@ -151,7 +151,7 @@ def google_auth():
             user.set_password(secrets.token_urlsafe(32))
             user.save()
 
-        login_user(user)
+        login_user(user, remember=True)
         return {"success": True, "redirect": url_for("main.dashboard")}
 
     except Exception as e:
