@@ -74,13 +74,24 @@ def create_app(config_class=Config):
         response.headers['X-XSS-Protection'] = '1; mode=block'
         # Basic Content-Security-Policy to allow Bootstrap/CDN
         csp = (
-            "default-src 'self'; "
-            "connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.googleapis.com https://*.google-analytics.com; "
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://www.gstatic.com https://*.googleapis.com; "
-            "font-src 'self' https://cdnjs.cloudflare.com; "
-            "img-src 'self' data:;"
-        )
+    "default-src 'self'; "
+    "connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com "
+        "https://*.googleapis.com https://*.google-analytics.com "
+        "https://identitytoolkit.googleapis.com "
+        "https://securetoken.googleapis.com; "
+    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+    "script-src 'self' 'unsafe-inline' "
+        "https://cdn.jsdelivr.net https://cdnjs.cloudflare.com "
+        "https://www.gstatic.com https://*.googleapis.com "
+        "https://apis.google.com https://*.google.com "
+        "https://*.firebaseapp.com; "
+    "frame-src 'self' "
+        "https://*.firebaseapp.com "
+        "https://accounts.google.com "
+        "https://resume-matcher-e022f.firebaseapp.com; "
+    "font-src 'self' https://cdnjs.cloudflare.com; "
+    "img-src 'self' data: https://*.googleusercontent.com;"
+)
         response.headers['Content-Security-Policy'] = csp
         return response
 
