@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Login – HireMatch{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 p-md-5">
+          <h4 class="fw-bold mb-1">Welcome back</h4>
+          <p class="text-muted mb-4">Log in to your HireMatch account.</p>
+
+          <button type="button" class="btn btn-outline-dark w-100 py-2 mb-3" id="googleAuthBtn">
+            <i class="fab fa-google text-danger me-2"></i>Sign in with Google
+          </button>
+          
+          <div class="d-flex align-items-center mb-3">
+             <hr class="flex-grow-1">
+             <span class="px-3 text-muted small">OR</span>
+             <hr class="flex-grow-1">
+          </div>
+
+          <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+            <div class="mb-3">
+              <label class="form-label fw-medium">Email</label>
+              <input type="email" name="email" class="form-control" placeholder="you@example.com"
+                     value="{{ request.form.get('email', '') }}" required/>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-medium">Password</label>
+              <input type="password" name="password" class="form-control" placeholder="••••••••" required/>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2">
+              <i class="fas fa-arrow-right-to-bracket me-2"></i>Log In
+            </button>
+          </form>
+
+          <hr class="my-4"/>
+          <p class="text-center text-muted mb-0 small">
+            Don't have an account?
+            <a href="{{ url_for('auth.register') }}" class="text-primary fw-medium">Create one</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+  import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  
+  const googleBtn = document.getElementById("googleAuthBtn");
+  if (googleBtn) {
+      googleBtn.addEventListener("click", async () => {
+          const auth = getAuth(window.firebaseApp);
+          const provider = new GoogleAuthProvider();
+          
+          try {
+              const result = await signInWithPopup(auth, provider);
+              const idToken = await result.user.getIdToken();
+              
+              const res = await fetch("{{ url_for('auth.google_auth') }}", {
+                  method: "POST",
+                  headers: { 
+                      "Content-Type": "application/json",
+                      "X-CSRFToken": "{{ csrf_token() }}"
+                  },
+                  body: JSON.stringify({ token: idToken })
+              });
+              
+              const data = await res.json();
+              if (data.success) {
+                  window.location.href = data.redirect;
+              } else {
+                  alert("Google Sign-In backend verification failed: " + data.error);
+              }
+          } catch (error) {
+              console.error(error);
+              // don't alert if they just closed the popup
+              if (error.code !== "auth/popup-closed-by-user") {
+                  alert("Error during Google sign-in: " + error.message);
+              }
+          }
+      });
+  }
+</script>
+{% endblock %}

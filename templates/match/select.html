@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Run Match – HireMatch{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+
+      <h4 class="fw-bold mb-1">Run Resume Matching</h4>
+      <p class="text-muted mb-4">
+        Select a job description and we'll score all your resumes against it.
+      </p>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          {% if jobs %}
+            <form method="POST" action="{{ url_for('match.run_match') }}" novalidate>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+              <div class="mb-4">
+                <label class="form-label fw-medium">Select Job Description</label>
+                <select name="jd_id" class="form-select" required>
+                  <option value="" disabled selected>Choose a job...</option>
+                  {% for j in jobs %}
+                    <option value="{{ j.jd_id }}">
+                      {{ j.title }}{% if j.company %} – {{ j.company }}{% endif %}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 py-2">
+                <i class="fas fa-bolt me-2"></i>Run Matching
+              </button>
+            </form>
+          {% else %}
+            <div class="text-center py-4">
+              <i class="fas fa-briefcase fa-2x text-muted opacity-50 mb-3 d-block"></i>
+              <p class="text-muted mb-3">You need at least one job description first.</p>
+              <a href="{{ url_for('job.upload_jd') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i>Add Job Description
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

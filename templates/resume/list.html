@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}My Resumes – HireMatch{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h4 class="fw-bold mb-0">My Resumes</h4>
+      <p class="text-muted mb-0">{{ resumes|length }} resume(s) uploaded</p>
+    </div>
+    <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-primary btn-sm">
+      <i class="fas fa-plus me-1"></i>Upload Resume
+    </a>
+  </div>
+
+  {% if resumes %}
+    <div class="row g-3">
+      {% for r in resumes %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-start gap-3 mb-3">
+              <div class="text-danger fs-4">
+                <i class="fas fa-file-pdf"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="fw-semibold text-truncate">{{ r.candidate_name or "Unknown" }}</div>
+                <div class="text-muted small text-truncate">{{ r.filename }}</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              {% for skill in r.skills_list()[:4] %}
+                <span class="badge bg-secondary bg-opacity-10 text-secondary me-1 mb-1">{{ skill }}</span>
+              {% endfor %}
+              {% if r.skills_list()|length > 4 %}
+                <span class="badge bg-secondary bg-opacity-10 text-secondary">+{{ r.skills_list()|length - 4 }} more</span>
+              {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-muted small">{{ r.uploaded_at.strftime('%d %b %Y') }}</span>
+              <a href="{{ url_for('resume.view_resume', resume_id=r.resume_id) }}"
+                 class="btn btn-sm btn-outline-primary">View</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <i class="fas fa-file-circle-question fa-3x text-muted opacity-50 mb-3 d-block"></i>
+      <h6 class="fw-semibold">No resumes yet</h6>
+      <p class="text-muted small mb-3">Upload your first resume to get started.</p>
+      <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-primary btn-sm">
+        <i class="fas fa-plus me-1"></i>Upload Resume
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

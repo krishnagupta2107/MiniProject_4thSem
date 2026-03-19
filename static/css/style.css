@@ -1,0 +1,151 @@
+/* ===================================================
+   HireMatch – main stylesheet
+   Basic custom styles on top of Bootstrap 5
+   =================================================== */
+
+:root {
+  --bs-body-font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --navbar-bg: #0f1117;
+  --footer-bg: #0f1117;
+}
+
+body {
+  font-family: var(--bs-body-font-family);
+  background-color: #f8f9fb;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* ----- navbar ----- */
+#mainNav {
+  background-color: var(--navbar-bg);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+#mainNav .navbar-brand {
+  font-size: 1.1rem;
+  letter-spacing: -0.3px;
+}
+
+#mainNav .nav-link {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.7);
+  transition: color 0.15s;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+}
+
+#mainNav .nav-link:hover,
+#mainNav .nav-link.active {
+  color: #fff;
+  background: rgba(255,255,255,0.07);
+}
+
+/* ----- cards ----- */
+.card {
+  border-radius: 12px;
+}
+
+.card.shadow-sm {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04) !important;
+}
+
+/* ----- hero section ----- */
+.hero-section {
+  background: linear-gradient(135deg, #f8f9fb 0%, #eef2ff 100%);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* ----- stat icons ----- */
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ----- resume avatar (small icon in list) ----- */
+.resume-avatar {
+  width: 32px;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* ----- feature icon on landing page ----- */
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 14px;
+  margin: 0 auto;
+}
+
+/* ----- footer ----- */
+.footer {
+  background-color: var(--footer-bg);
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8125rem;
+}
+
+.footer .fw-semibold {
+  color: rgba(255,255,255,0.85);
+}
+
+/* ----- progress bars ----- */
+.progress {
+  border-radius: 99px;
+  background-color: rgba(0,0,0,0.06);
+}
+
+/* ----- form controls ----- */
+.form-control:focus,
+.form-select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
+}
+
+/* ----- badges ----- */
+.badge {
+  font-weight: 500;
+}
+
+/* ----- tables ----- */
+.table > :not(caption) > * > * {
+  padding: 0.85rem 1rem;
+}
+
+/* ----- breadcrumb ----- */
+.breadcrumb {
+  font-size: 0.8125rem;
+}
+
+/* ----- preformatted text ----- */
+pre {
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ----- min-w-0 for flex truncation ----- */
+.min-w-0 {
+  min-width: 0;
+}
+
+/* ----- responsive tweaks ----- */
+@media (max-width: 576px) {
+  .display-4 {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %}Match Results – {{ jd.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- header -->
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+    <div>
+      <nav aria-label="breadcrumb" class="mb-2">
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('match.run_match') }}">Matching</a></li>
+          <li class="breadcrumb-item active">Results</li>
+        </ol>
+      </nav>
+      <h4 class="fw-bold mb-0">{{ jd.title }}</h4>
+      {% if jd.company %}<span class="text-muted">{{ jd.company }}</span>{% endif %}
+    </div>
+    <div class="d-flex gap-2">
+      <span class="badge bg-body-secondary text-body fs-6 fw-semibold px-3 py-2">
+        Avg score: {{ avg_score }}
+      </span>
+      <a href="{{ url_for('match.run_match') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-refresh me-1"></i>Re-run
+      </a>
+    </div>
+  </div>
+
+  <!-- stats row -->
+  {% if matches %}
+    {% set shortlisted = matches | selectattr('shortlist_label', 'equalto', 'Shortlisted') | list %}
+    {% set maybe       = matches | selectattr('shortlist_label', 'equalto', 'Maybe')       | list %}
+    {% set rejected    = matches | selectattr('shortlist_label', 'equalto', 'Rejected')    | list %}
+
+    <div class="row g-3 mb-4">
+      <div class="col-4">
+        <div class="card border-0 shadow-sm text-center py-3">
+          <div class="fs-3 fw-bold text-success">{{ shortlisted|length }}</div>
+          <div class="text-muted small">Shortlisted</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card border-0 shadow-sm text-center py-3">
+          <div class="fs-3 fw-bold text-warning">{{ maybe|length }}</div>
+          <div class="text-muted small">Maybe</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card border-0 shadow-sm text-center py-3">
+          <div class="fs-3 fw-bold text-danger">{{ rejected|length }}</div>
+          <div class="text-muted small">Rejected</div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- results table -->
+  {% if matches %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="px-4 py-3">Candidate</th>
+                <th>Score</th>
+                <th>Label</th>
+                <th>Matched Skills</th>
+                <th>Missing Skills</th>
+                <th class="px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for m in matches %}
+              <tr>
+                <td class="px-4">
+                  <div class="fw-medium">{{ m.resume.candidate_name or m.resume.filename }}</div>
+                  <div class="text-muted small">
+                    {% if m.resume.experience_years %}{{ m.resume.experience_years }}y exp ·{% endif %}
+                    {{ m.resume.education_level or '' }}
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="progress" style="width:70px;height:6px;">
+                      <div class="progress-bar
+                        {% if m.relevance_score >= 70 %}bg-success
+                        {% elif m.relevance_score >= 45 %}bg-warning
+                        {% else %}bg-danger{% endif %}"
+                        style="width:{{ m.relevance_score }}%"></div>
+                    </div>
+                    <span class="fw-bold">{{ m.relevance_score }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge rounded-pill px-3
+                    {% if m.shortlist_label == 'Shortlisted' %}bg-success
+                    {% elif m.shortlist_label == 'Maybe' %}bg-warning text-dark
+                    {% else %}bg-danger{% endif %}">
+                    {{ m.shortlist_label }}
+                  </span>
+                </td>
+                <td>
+                  {% for skill in m.matched_skills_list()[:3] %}
+                    <span class="badge bg-success bg-opacity-10 text-success me-1">{{ skill }}</span>
+                  {% endfor %}
+                  {% if m.matched_skills_list()|length > 3 %}
+                    <span class="text-muted small">+{{ m.matched_skills_list()|length - 3 }}</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% for skill in m.missing_skills_list()[:3] %}
+                    <span class="badge bg-danger bg-opacity-10 text-danger me-1">{{ skill }}</span>
+                  {% endfor %}
+                  {% if m.missing_skills_list()|length > 3 %}
+                    <span class="text-muted small">+{{ m.missing_skills_list()|length - 3 }}</span>
+                  {% endif %}
+                </td>
+                <td class="px-4">
+                  <button class="btn btn-sm btn-outline-primary"
+                          data-bs-toggle="modal" 
+                          data-bs-target="#chartModal{{ m.match_id }}"
+                          onclick="renderRadar('{{ m.match_id }}', {{ jd.skills_list() | tojson }}, {{ m.matched_skills_list() | tojson }})">
+                    <i class="fas fa-chart-pie me-1"></i>Chart
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger ms-1"
+                          onclick="exportPDF('{{ m.match_id }}')">
+                    <i class="fas fa-file-pdf"></i>
+                  </button>
+                </td>
+              </tr>
+              
+              <!-- Modal for Chart & PDF Export Target ->
+              <div class="modal fade" id="chartModal{{ m.match_id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content" id="exportTarget{{ m.match_id }}">
+                    <div class="modal-header border-0 pb-0">
+                      <h5 class="modal-title fw-bold">Candidate Analysis Report</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <h6>Candidate: <span class="text-primary">{{ m.resume.candidate_name or m.resume.filename }}</span></h6>
+                      <h6>Job: <span class="text-primary">{{ jd.title }}</span></h6>
+                      <hr>
+                      <div class="row">
+                          <div class="col-md-6 mb-3">
+                              <p><strong>Score:</strong> {{ m.relevance_score }}/100 ({{ m.shortlist_label }})</p>
+                              <p><strong>Matched Skills:</strong> {{ m.matched_skills_list() | join(', ') }}</p>
+                              <p><strong>Missing Skills:</strong> {{ m.missing_skills_list() | join(', ') }}</p>
+                              {% if m.resume.candidate_email %}<p><strong>Email:</strong> {{ m.resume.candidate_email }}</p>{% endif %}
+                              {% if m.resume.candidate_phone %}<p><strong>Phone:</strong> {{ m.resume.candidate_phone }}</p>{% endif %}
+                          </div>
+                          <div class="col-md-6">
+                              <canvas id="radarChart{{ m.match_id }}" width="300" height="300"></canvas>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-center py-5 text-muted">
+        <i class="fas fa-circle-question fa-3x mb-3 opacity-50 d-block"></i>
+        No results yet. Upload some resumes first then re-run matching.
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+// Keep track of charts so we can destroy them to prevent overlaps when re-opening modals
+const memoryCharts = {};
+
+function renderRadar(matchId, jdSkills, matchedSkills) {
+    if (memoryCharts[matchId]) {
+        memoryCharts[matchId].destroy();
+    }
+    
+    // Pick the top 8 requirements to avoid overcrowding the radar graph
+    const labels = jdSkills.slice(0, 8);
+    const candidateData = labels.map(s => matchedSkills.includes(s) ? 1 : 0);
+    const jobData = labels.map(() => 1);
+    
+    const ctx = document.getElementById('radarChart' + matchId).getContext('2d');
+    memoryCharts[matchId] = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Candidate Skills',
+                    data: candidateData,
+                    backgroundColor: 'rgba(25, 135, 84, 0.2)',
+                    borderColor: 'rgba(25, 135, 84, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(25, 135, 84, 1)'
+                },
+                {
+                    label: 'Required',
+                    data: jobData,
+                    backgroundColor: 'rgba(220, 53, 69, 0.05)',
+                    borderColor: 'rgba(220, 53, 69, 0.3)',
+                    borderDash: [5, 5],
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                r: {
+                    angleLines: { display: false },
+                    suggestedMin: 0,
+                    suggestedMax: 1,
+                    ticks: { display: false }
+                }
+            }
+        }
+    });
+}
+
+function exportPDF(matchId) {
+    const element = document.getElementById('exportTarget' + matchId);
+    
+    // Temporarily remove standard modal classes that ruin rendering layouts for the PDF clone
+    element.classList.remove('modal-content');
+    element.style.padding = '20px';
+    
+    const opt = {
+      margin:       1,
+      filename:     'HireMatch_Report_' + matchId + '.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+        // Restore classes
+        element.classList.add('modal-content');
+        element.style.padding = '';
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Add Job Description – HireMatch{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+          <li class="breadcrumb-item active">Add Job Description</li>
+        </ol>
+      </nav>
+
+      <h4 class="fw-bold mb-1">Add Job Description</h4>
+      <p class="text-muted mb-4">Paste the job description — we'll pull out required skills automatically.</p>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form method="POST" action="{{ url_for('job.upload_jd') }}" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-medium">Job Title <span class="text-danger">*</span></label>
+                <input type="text" name="title" class="form-control"
+                       placeholder="e.g. Backend Developer"
+                       value="{{ request.form.get('title', '') }}" required/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium">Company</label>
+                <input type="text" name="company" class="form-control"
+                       placeholder="e.g. Infosys"
+                       value="{{ request.form.get('company', '') }}"/>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-medium">Location</label>
+              <input type="text" name="location" class="form-control"
+                     placeholder="e.g. Bangalore, Remote"
+                     value="{{ request.form.get('location', '') }}"/>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-medium">Job Description <span class="text-danger">*</span></label>
+              <textarea name="jd_text" class="form-control" rows="12"
+                        placeholder="Paste the full job description here...">{{ request.form.get('jd_text', '') }}</textarea>
+              <div class="form-text">The more detailed the description, the better the skill extraction.</div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-primary px-4">
+                <i class="fas fa-wand-magic-sparkles me-2"></i>Extract & Save
+              </button>
+              <a href="{{ url_for('job.list_jobs') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

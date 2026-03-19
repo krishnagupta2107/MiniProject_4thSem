@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Admin – HireMatch{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <div class="mb-4">
+    <h4 class="fw-bold mb-0"><i class="fas fa-shield-halved me-2 text-danger"></i>Admin Dashboard</h4>
+    <p class="text-muted">System overview and user management.</p>
+  </div>
+
+  <!-- stat cards -->
+  <div class="row g-3 mb-5">
+    {% for label, val, icon, color in [
+        ('Total Users',   stats.users,   'users',      'primary'),
+        ('Resumes',       stats.resumes, 'file-lines', 'success'),
+        ('Job Descs',     stats.jobs,    'briefcase',  'warning'),
+        ('Matches Run',   stats.matches, 'bolt',       'danger'),
+    ] %}
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4 text-center">
+          <div class="mb-2 text-{{ color }}">
+            <i class="fas fa-{{ icon }} fa-lg"></i>
+          </div>
+          <div class="fs-2 fw-bold">{{ val }}</div>
+          <div class="text-muted small">{{ label }}</div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- charts -->
+  <div class="row g-3 mb-5">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-semibold mb-3">Database Overview</h6>
+          <canvas id="overviewChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body p-4">
+          <h6 class="fw-semibold mb-3">Matches by Outcome</h6>
+          <canvas id="matchesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- recent users -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0">
+      <h6 class="fw-semibold mb-0">Recent Users</h6>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="px-4 py-3">Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th class="px-4">Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in recent_users %}
+            <tr>
+              <td class="px-4 fw-medium">{{ u.full_name }}</td>
+              <td class="text-muted">{{ u.email }}</td>
+              <td>
+                <span class="badge {% if u.role == 'admin' %}bg-danger{% else %}bg-primary{% endif %}">
+                  {{ u.role }}
+                </span>
+              </td>
+              <td class="px-4 text-muted small">{{ u.created_at.strftime('%d %b %Y') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Overview Chart
+    const ctxOverview = document.getElementById('overviewChart').getContext('2d');
+    new Chart(ctxOverview, {
+      type: 'bar',
+      data: {
+        labels: {{ chart_overview_labels | tojson }},
+        datasets: [{
+          label: 'Total Count',
+          data: {{ chart_overview_data | tojson }},
+          backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545'],
+        }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+
+    // Matches Chart
+    const ctxMatches = document.getElementById('matchesChart').getContext('2d');
+    new Chart(ctxMatches, {
+      type: 'doughnut',
+      data: {
+        labels: {{ chart_matches_labels | tojson }},
+        datasets: [{
+          data: {{ chart_matches_data | tojson }},
+          backgroundColor: ['#198754', '#ffc107', '#dc3545'],
+        }]
+      },
+      options: { responsive: true }
+    });
+  });
+</script>
+{% endblock %}

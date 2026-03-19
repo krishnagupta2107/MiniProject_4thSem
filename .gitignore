@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+instance/
+uploads/
+.env
+.pytest_cache/
+*.db
+*.sqlite3
+.DS_Store
+resume-checker-key.json
