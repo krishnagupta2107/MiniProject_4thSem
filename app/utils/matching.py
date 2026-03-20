@@ -32,41 +32,41 @@ def score_resume_for_job(resume, jd) -> dict:
     matched = sorted(req_set & have_set)
     missing = sorted(req_set - have_set)
 
-    # skill overlap score (0-1)
+    # kitna skill match hua
     if req_set:
         skill_score = len(matched) / len(req_set)
     else:
         skill_score = 0.5   # no skills listed = neutral
 
-    # coverage (don't penalize someone with extra skills)
+    # extra skill walon ko marna mat
     if have_set:
         coverage = len(matched) / len(have_set)
     else:
         coverage = 0.0
 
-    # experience match
+    # exp ka hisab
     jd_years  = extract_experience_years(jd.raw_text or "")
     exp_bonus = _check_experience(resume.experience_years, jd_years)
 
-    # Use Deep NLP semantic textual similarity via spaCy word vectors
+    # spacy se deep nlp lagao
     try:
         if nlp:
-            # limit text to 5000 chars for speed
+            # jaldi ke liye 5000 character fix
             text1 = (jd.raw_text or " ".join(required))[:5000]
             text2 = (resume.raw_text or " ".join(candidate))[:5000]
             doc_jd = nlp(text1)
             doc_res = nlp(text2)
             cosine_sim = doc_jd.similarity(doc_res)
         else:
-            # CI or missing model fallback
+            # model fail to yeh chalega
             cosine_sim = skill_score
     except Exception:
-        # Fallback if text is empty or model errors
+        # khali text error se bachne ka try
         cosine_sim = skill_score
 
     semantic_score = float(cosine_sim)
 
-    # Combine traditional overlap (40%), semantic similarity (50%), and experience (10%)
+    # 40-50-10 ka weightage
     raw_score = (skill_score * 40.0) + (semantic_score * 50.0) + (exp_bonus * 10.0)
     score = round(min(raw_score, 100.0), 2)
 
@@ -111,7 +111,7 @@ def _tfidf_boost(matched_skills: list, all_required: list) -> float:
         idf = math.log((n + 1) / (tf + 1)) + 1
         score += idf
 
-    # normalize to 0-1
+    # 0 to 1 mein set karo
     max_possible = sum(math.log((n + 1) / (freq.get(s, 1) + 1)) + 1 for s in all_required)
     if max_possible > 0:
         return score / max_possible

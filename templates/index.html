@@ -2,109 +2,120 @@
 {% block title %}HireMatch – AI Resume Matching{% endblock %}
 
 {% block content %}
-<!-- hero -->
-<section class="hero-section text-center py-5">
-  <div class="container py-4">
+<!-- hero section bhai -->
+<section class="hero-section text-center">
+  <div class="hero-bg-shape"></div>
+  <div class="container hero-content py-5">
     <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="badge bg-primary bg-opacity-10 text-primary fw-semibold mb-3 px-3 py-2 rounded-pill">
-          🎓 4th Semester Mini Project · AI/ML
+      <div class="col-lg-8 py-5">
+        <div class="d-inline-block badge bg-white bg-opacity-75 border text-primary fw-semibold mb-4 px-4 py-2 rounded-pill shadow-sm glass-panel">
+          <i class="fas fa-graduation-cap me-2 text-primary"></i> 4th Semester Mini Project · AI/ML
         </div>
-        <h1 class="display-4 fw-bold mb-3">
+        <h1 class="display-3 fw-bold mb-4">
           Match Resumes to Jobs <br>
-          <span class="text-primary">with AI</span>
+          <span class="text-gradient">with AI Power</span>
         </h1>
-        <p class="lead text-muted mb-4">
+        <p class="lead text-secondary mb-5 px-md-5">
           Upload resumes and job descriptions. Our NLP-based system extracts skills,
           scores candidates, and ranks them automatically — no manual screening needed.
         </p>
         <div class="d-flex justify-content-center gap-3 flex-wrap">
-          <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4">
-            <i class="fas fa-rocket me-2"></i>Get Started Free
-          </a>
-          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">
-            Login
-          </a>
+          {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary shadow-lg btn-lg px-5 py-3 rounded-pill fw-bold">
+              <i class="fas fa-gauge-high me-2"></i> Go to Dashboard
+            </a>
+          {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary shadow-lg btn-lg px-5 py-3 rounded-pill fw-bold">
+              <i class="fas fa-rocket me-2"></i> Get Started Free
+            </a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-light shadow-sm btn-lg px-5 py-3 rounded-pill fw-bold">
+              Login
+            </a>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- features -->
-<section class="py-5 bg-body-secondary">
+<!-- apne features -->
+<section class="py-5 bg-transparent position-relative z-1" style="margin-top: -3rem;">
   <div class="container">
-    <h2 class="text-center fw-bold mb-5">How it works</h2>
     <div class="row g-4">
       <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100 text-center p-4">
-          <div class="feature-icon mb-3">
-            <i class="fas fa-file-arrow-up fa-2x text-primary"></i>
+        <div class="card glass-panel hover-lift h-100 text-center p-4">
+          <div class="feature-icon mb-3 shadow-sm">
+            <i class="fas fa-file-arrow-up"></i>
           </div>
-          <h5 class="fw-semibold">1. Upload Resume</h5>
-          <p class="text-muted small">PDF, DOCX, TXT — or just paste the text directly.</p>
+          <h5 class="fw-bold mb-2">1. Upload Resume</h5>
+          <p class="text-muted small mb-0">PDF, DOCX, TXT — or just paste the text directly.</p>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100 text-center p-4">
-          <div class="feature-icon mb-3">
-            <i class="fas fa-briefcase fa-2x text-primary"></i>
+        <div class="card glass-panel hover-lift h-100 text-center p-4">
+          <div class="feature-icon mb-3 shadow-sm">
+            <i class="fas fa-briefcase"></i>
           </div>
-          <h5 class="fw-semibold">2. Add Job Description</h5>
-          <p class="text-muted small">Paste the JD and we extract the required skills automatically.</p>
+          <h5 class="fw-bold mb-2">2. Add Job Desc</h5>
+          <p class="text-muted small mb-0">Paste the JD and we extract the required skills automatically.</p>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100 text-center p-4">
-          <div class="feature-icon mb-3">
-            <i class="fas fa-bolt fa-2x text-primary"></i>
+        <div class="card glass-panel hover-lift h-100 text-center p-4">
+          <div class="feature-icon mb-3 shadow-sm">
+            <i class="fas fa-bolt"></i>
           </div>
-          <h5 class="fw-semibold">3. Run Matching</h5>
-          <p class="text-muted small">Our algorithm scores each resume against the job using skill overlap and experience.</p>
+          <h5 class="fw-bold mb-2">3. Run Matching</h5>
+          <p class="text-muted small mb-0">Our AI scores each resume against the job using NLP.</p>
         </div>
       </div>
       <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100 text-center p-4">
-          <div class="feature-icon mb-3">
-            <i class="fas fa-ranking-star fa-2x text-primary"></i>
+        <div class="card glass-panel hover-lift h-100 text-center p-4">
+          <div class="feature-icon mb-3 shadow-sm">
+            <i class="fas fa-ranking-star"></i>
           </div>
-          <h5 class="fw-semibold">4. Review Rankings</h5>
-          <p class="text-muted small">See ranked candidates with Shortlisted / Maybe / Rejected labels.</p>
+          <h5 class="fw-bold mb-2">4. Review Ranks</h5>
+          <p class="text-muted small mb-0">See ranked candidates with Shortlisted / Maybe / Rejected labels.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- demo credentials -->
-<section class="py-5">
+<!-- demo id pwd -->
+<section class="py-5 mb-5">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-6">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body p-4">
-            <h5 class="fw-bold mb-3"><i class="fas fa-key me-2 text-primary"></i>Demo Accounts</h5>
-            <table class="table table-sm mb-0">
-              <thead class="table-light">
-                <tr>
-                  <th>Role</th>
-                  <th>Email</th>
-                  <th>Password</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="badge bg-success">Recruiter</span></td>
-                  <td><code>recruiter@demo.com</code></td>
-                  <td><code>demo123</code></td>
-                </tr>
-                <tr>
-                  <td><span class="badge bg-danger">Admin</span></td>
-                  <td><code>admin@demo.com</code></td>
-                  <td><code>admin123</code></td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="card glass-panel hover-lift">
+          <div class="card-body p-4 p-md-5 text-center">
+            <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 64px; height: 64px;">
+               <i class="fas fa-key fa-2x"></i>
+            </div>
+            <h4 class="fw-bold mb-4">Demo Accounts</h4>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3 border-0 rounded-start">Role</th>
+                    <th class="border-0">Email</th>
+                    <th class="pe-3 border-0 rounded-end">Password</th>
+                  </tr>
+                </thead>
+                <tbody class="border-top-0">
+                  <tr>
+                    <td class="ps-3 border-0"><span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill">Recruiter</span></td>
+                    <td class="border-0 fw-medium"><code>recruiter@demo.com</code></td>
+                    <td class="pe-3 border-0"><code>demo123</code></td>
+                  </tr>
+                  <tr>
+                    <td class="ps-3 border-0"><span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2 rounded-pill">Admin</span></td>
+                    <td class="border-0 fw-medium"><code>admin@demo.com</code></td>
+                    <td class="pe-3 border-0"><code>admin123</code></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

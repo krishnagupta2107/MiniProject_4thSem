@@ -4,26 +4,26 @@
 {% block content %}
 <div class="container py-5">
 
-  <!-- header -->
-  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <!-- user ka h1 wagera -->
+  <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-2">
     <div>
-      <h4 class="fw-bold mb-0">Hi, {{ current_user.full_name.split()[0] }} 👋</h4>
-      <p class="text-muted mb-0">Here's what's going on with your account.</p>
+      <h3 class="fw-bold mb-1">Hi, {{ current_user.full_name.split()[0] }} 👋</h3>
+      <p class="text-secondary mb-0">Here's what's going on with your account.</p>
     </div>
-    <div class="d-flex gap-2">
-      <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-outline-primary btn-sm">
-        <i class="fas fa-plus me-1"></i>Add Resume
+    <div class="d-flex gap-3">
+      <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-light shadow-sm fw-medium px-4 border rounded-pill hover-lift">
+        <i class="fas fa-plus me-2 text-primary"></i> Add Resume
       </a>
-      <a href="{{ url_for('match.run_match') }}" class="btn btn-primary btn-sm">
-        <i class="fas fa-bolt me-1"></i>Run Match
+      <a href="{{ url_for('match.run_match') }}" class="btn btn-primary shadow-sm fw-medium px-4 rounded-pill hover-lift">
+        <i class="fas fa-bolt me-2"></i> Run Match
       </a>
     </div>
   </div>
 
-  <!-- stat cards -->
+  <!-- ginti dikhane ke liye -->
   <div class="row g-3 mb-4">
     <div class="col-6 col-md-4">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card glass-panel hover-lift h-100">
         <div class="card-body d-flex align-items-center gap-3">
           <div class="stat-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3">
             <i class="fas fa-file-lines fa-lg"></i>
@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="col-6 col-md-4">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card glass-panel hover-lift h-100">
         <div class="card-body d-flex align-items-center gap-3">
           <div class="stat-icon bg-success bg-opacity-10 text-success rounded-3 p-3">
             <i class="fas fa-briefcase fa-lg"></i>
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="col-12 col-md-4">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card glass-panel hover-lift h-100">
         <div class="card-body d-flex align-items-center gap-3">
           <div class="stat-icon bg-warning bg-opacity-10 text-warning rounded-3 p-3">
             <i class="fas fa-bolt fa-lg"></i>
@@ -63,10 +63,10 @@
     </div>
   </div>
 
-  <!-- Chart Analytics -->
+  <!-- graph area -->
   <div class="row g-4 mb-4">
     <div class="col-12">
-      <div class="card border-0 shadow-sm">
+      <div class="card glass-panel shadow-sm">
         <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
           <h6 class="fw-semibold mb-0">Aggregate Match Analytics (Recent)</h6>
         </div>
@@ -81,9 +81,9 @@
 
   <div class="row g-4">
 
-    <!-- recent resumes -->
+    <!-- naye wale resume -->
     <div class="col-lg-6">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card glass-panel shadow-sm h-100">
         <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
           <h6 class="fw-semibold mb-0">Recent Resumes</h6>
           <a href="{{ url_for('resume.list_resumes') }}" class="btn btn-link btn-sm p-0 text-decoration-none">View all</a>
@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <!-- recent job descriptions -->
+    <!-- naye jobs -->
     <div class="col-lg-6">
       <div class="card border-0 shadow-sm h-100">
         <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
@@ -153,10 +153,10 @@
       </div>
     </div>
 
-    <!-- recent matches -->
+    <!-- naya result -->
     {% if recent_matches %}
     <div class="col-12">
-      <div class="card border-0 shadow-sm">
+      <div class="card glass-panel shadow-sm">
         <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
           <h6 class="fw-semibold mb-0">Recent Match Results</h6>
         </div>

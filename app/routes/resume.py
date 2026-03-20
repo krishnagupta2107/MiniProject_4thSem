@@ -29,7 +29,7 @@ def upload_resume():
         processed_count = 0
         total_skills = 0
 
-        # Process uploaded files
+        # yaha file lenge
         for file_input in file_inputs:
             if file_input and file_input.filename:
                 if not allowed_file(file_input.filename):
@@ -74,7 +74,7 @@ def upload_resume():
                 processed_count += 1
                 total_skills += len(parsed["skills_list"])
 
-        # Process pasted text if no files or additional text provided
+        # direct text paste
         if text_input and not processed_count:
             parsed   = parse_resume_text(text_input)
             from app.utils.extractors import extract_email, extract_phone, extract_links, extract_entities
@@ -131,7 +131,7 @@ def view_resume(resume_id):
     if not resume:
         abort(404)
 
-    # only owner or admin can view
+    # sirf owner aur admin dekhega
     if resume.user_id != current_user.user_id and not current_user.is_admin():
         flash("You don't have permission to view this resume.", "danger")
         return redirect(url_for("resume.list_resumes"))

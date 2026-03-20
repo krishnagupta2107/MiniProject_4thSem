@@ -1,7 +1,4 @@
-# =========================================================
-# Render.com Infrastructure as Code (Blueprint)
-# Documentation: https://render.com/docs/blueprint-spec
-# =========================================================
+# Render deployment blueprint
 
 services:
   - type: web
@@ -11,17 +8,13 @@ services:
     plan: free
     branch: main
     
-    # -----------------------------------------------------
     # Build & Run Commands
-    # -----------------------------------------------------
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn wsgi:app"
     
-    # -----------------------------------------------------
     # Environment Variables
-    # -----------------------------------------------------
     envVars:
-      # --- System Config ---
+      # System Config
       - key: PYTHON_VERSION
         value: "3.12.0"
       - key: FLASK_ENV
@@ -29,11 +22,11 @@ services:
       - key: PORT
         value: "10000"
         
-      # --- Security ---
+      # Security
       - key: SECRET_KEY
         generateValue: true
         
-      # --- Firebase Credentials (fill in Render Dashboard) ---
+      # Firebase Credentials
       - key: FIREBASE_API_KEY
         sync: false
       - key: FIREBASE_JSON

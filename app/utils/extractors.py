@@ -22,13 +22,13 @@ def extract_entities(text):
     if not nlp:
         return {"companies": [], "names": []}
     
-    # Process only first 2000 chars to save CPU time on huge resumes
+    # cpu bachane ke liye pehle 2000 char
     doc = nlp(text[:2000])
     companies = set()
     names = set()
     
     for ent in doc.ents:
-        # Filter out common false positive ORGs like "GPA", "Degree"
+        # faltu chize hata do gpa wgai
         if ent.label_ == "ORG" and len(ent.text) > 2:
             companies.add(ent.text.strip())
         elif ent.label_ == "PERSON" and len(ent.text.split()) >= 2:

@@ -14,7 +14,7 @@ def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# ---------- file readers ----------
+# file padhne ka code
 
 def _read_pdf(filepath: str) -> str:
     try:
@@ -54,9 +54,9 @@ def extract_text_from_file(filepath: str) -> str:
     return _read_txt(filepath)
 
 
-# ---------- skill extraction ----------
+# skill nikalne ka code
 
-# I grouped skills by category - easier to add more later
+# category wise skill easy padega
 SKILLS_DB = {
     "languages": [
         "python", "java", "javascript", "typescript", "c++", "c", "go", "rust",
@@ -93,13 +93,13 @@ ALL_SKILLS = [skill for group in SKILLS_DB.values() for skill in group]
 
 def extract_skills(text: str) -> list:
     text_lower = text.lower()
-    # remove special chars but keep + # / . for things like c++ and ci/cd
+    # special character hatao but c++ wagera rakhna
     text_clean = re.sub(r"[^\w\s\+\#\/\.]", " ", text_lower)
     text_clean = re.sub(r"\s+", " ", text_clean).strip()
 
     found = []
     for skill in ALL_SKILLS:
-        # word-boundary-like match (handles multi-word skills too)
+        # regex jugaad for skills
         pattern = r"(?<!\w)" + re.escape(skill) + r"(?!\w)"
         if re.search(pattern, text_clean):
             found.append(skill)
@@ -107,7 +107,7 @@ def extract_skills(text: str) -> list:
     return sorted(set(found))
 
 
-# ---------- other extractors ----------
+# baaki cheezein extract
 
 def extract_experience_years(text: str) -> float:
     """Look for patterns like '3 years', '2+ years', etc."""
@@ -153,7 +153,7 @@ def extract_candidate_name(text: str) -> str:
     return "Unknown"
 
 
-# ---------- public parse functions ----------
+# main functions
 
 def parse_resume_file(filepath: str) -> dict:
     raw = extract_text_from_file(filepath)

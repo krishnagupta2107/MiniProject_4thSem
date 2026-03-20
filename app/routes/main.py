@@ -41,7 +41,7 @@ def dashboard():
     match_count = len(user_matches)
     recent_matches = user_matches[:5]
 
-    # top skills across first 20 resumes / job descriptions
+    # top 20 mein se best skills
     resume_skills = Counter()
     jd_skills     = Counter()
     for r in resumes[:20]:

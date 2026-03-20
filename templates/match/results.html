@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container py-5">
 
-  <!-- header -->
+  <!-- top ka header -->
   <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
     <div>
       <nav aria-label="breadcrumb" class="mb-2">
@@ -17,17 +17,17 @@
       <h4 class="fw-bold mb-0">{{ jd.title }}</h4>
       {% if jd.company %}<span class="text-muted">{{ jd.company }}</span>{% endif %}
     </div>
-    <div class="d-flex gap-2">
-      <span class="badge bg-body-secondary text-body fs-6 fw-semibold px-3 py-2">
-        Avg score: {{ avg_score }}
+    <div class="d-flex gap-3 align-items-center">
+      <span class="badge bg-white bg-opacity-75 text-primary border fs-6 fw-bold px-4 py-2 rounded-pill shadow-sm glass-panel">
+        <i class="fas fa-star text-warning me-1"></i> Avg score: {{ avg_score }}
       </span>
-      <a href="{{ url_for('match.run_match') }}" class="btn btn-outline-secondary btn-sm">
-        <i class="fas fa-refresh me-1"></i>Re-run
+      <a href="{{ url_for('match.run_match') }}" class="btn btn-light border rounded-pill shadow-sm px-3 hover-lift fw-medium">
+        <i class="fas fa-refresh me-2 text-primary"></i>Re-run Match
       </a>
     </div>
   </div>
 
-  <!-- stats row -->
+  <!-- kitne select hue -->
   {% if matches %}
     {% set shortlisted = matches | selectattr('shortlist_label', 'equalto', 'Shortlisted') | list %}
     {% set maybe       = matches | selectattr('shortlist_label', 'equalto', 'Maybe')       | list %}
@@ -35,19 +35,19 @@
 
     <div class="row g-3 mb-4">
       <div class="col-4">
-        <div class="card border-0 shadow-sm text-center py-3">
+        <div class="card glass-panel hover-lift text-center py-4">
           <div class="fs-3 fw-bold text-success">{{ shortlisted|length }}</div>
           <div class="text-muted small">Shortlisted</div>
         </div>
       </div>
       <div class="col-4">
-        <div class="card border-0 shadow-sm text-center py-3">
+        <div class="card glass-panel hover-lift text-center py-4">
           <div class="fs-3 fw-bold text-warning">{{ maybe|length }}</div>
           <div class="text-muted small">Maybe</div>
         </div>
       </div>
       <div class="col-4">
-        <div class="card border-0 shadow-sm text-center py-3">
+        <div class="card glass-panel hover-lift text-center py-4">
           <div class="fs-3 fw-bold text-danger">{{ rejected|length }}</div>
           <div class="text-muted small">Rejected</div>
         </div>
@@ -55,9 +55,9 @@
     </div>
   {% endif %}
 
-  <!-- results table -->
+  <!-- result wala table -->
   {% if matches %}
-    <div class="card border-0 shadow-sm">
+    <div class="card glass-panel shadow-sm border-0">
       <div class="card-body p-0">
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
@@ -100,6 +100,11 @@
                     {% else %}bg-danger{% endif %}">
                     {{ m.shortlist_label }}
                   </span>
+                  {% if m.feedback %}
+                    <div class="mt-2 text-muted" style="font-size: 0.85rem; max-width: 250px;">
+                      <i class="fas fa-lightbulb text-warning"></i> {{ m.feedback }}
+                    </div>
+                  {% endif %}
                 </td>
                 <td>
                   {% for skill in m.matched_skills_list()[:3] %}
@@ -121,7 +126,7 @@
                   <button class="btn btn-sm btn-outline-primary"
                           data-bs-toggle="modal" 
                           data-bs-target="#chartModal{{ m.match_id }}"
-                          onclick="renderRadar('{{ m.match_id }}', {{ jd.skills_list() | tojson }}, {{ m.matched_skills_list() | tojson }})">
+                          onclick='renderRadar("{{ m.match_id }}", {{ jd.skills_list() | tojson }}, {{ m.matched_skills_list() | tojson }})'>
                     <i class="fas fa-chart-pie me-1"></i>Chart
                   </button>
                   <button class="btn btn-sm btn-outline-danger ms-1"
@@ -130,45 +135,53 @@
                   </button>
                 </td>
               </tr>
-              
-              <!-- Modal for Chart & PDF Export Target ->
-              <div class="modal fade" id="chartModal{{ m.match_id }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                  <div class="modal-content" id="exportTarget{{ m.match_id }}">
-                    <div class="modal-header border-0 pb-0">
-                      <h5 class="modal-title fw-bold">Candidate Analysis Report</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <h6>Candidate: <span class="text-primary">{{ m.resume.candidate_name or m.resume.filename }}</span></h6>
-                      <h6>Job: <span class="text-primary">{{ jd.title }}</span></h6>
-                      <hr>
-                      <div class="row">
-                          <div class="col-md-6 mb-3">
-                              <p><strong>Score:</strong> {{ m.relevance_score }}/100 ({{ m.shortlist_label }})</p>
-                              <p><strong>Matched Skills:</strong> {{ m.matched_skills_list() | join(', ') }}</p>
-                              <p><strong>Missing Skills:</strong> {{ m.missing_skills_list() | join(', ') }}</p>
-                              {% if m.resume.candidate_email %}<p><strong>Email:</strong> {{ m.resume.candidate_email }}</p>{% endif %}
-                              {% if m.resume.candidate_phone %}<p><strong>Phone:</strong> {{ m.resume.candidate_phone }}</p>{% endif %}
-                          </div>
-                          <div class="col-md-6">
-                              <canvas id="radarChart{{ m.match_id }}" width="300" height="300"></canvas>
-                          </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
               {% endfor %}
             </tbody>
           </table>
         </div>
       </div>
     </div>
+
+    <!-- modal bahar rakho warna table tod dega -->
+    {% for m in matches %}
+    <!-- chart ka popup -->
+    <div class="modal fade" id="chartModal{{ m.match_id }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="exportTarget{{ m.match_id }}">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold">Candidate Analysis Report</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h6>Candidate: <span class="text-primary">{{ m.resume.candidate_name or m.resume.filename }}</span></h6>
+            <h6>Job: <span class="text-primary">{{ jd.title }}</span></h6>
+            <hr>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <p><strong>Score:</strong> {{ m.relevance_score }}/100 ({{ m.shortlist_label }})</p>
+                    <p><strong>Matched Skills:</strong> {{ m.matched_skills_list() | join(', ') }}</p>
+                    <p><strong>Missing Skills:</strong> {{ m.missing_skills_list() | join(', ') }}</p>
+                    {% if m.feedback %}
+                      <div class="alert alert-warning py-2 small">
+                        <strong>💡 Feedback:</strong> {{ m.feedback }}
+                      </div>
+                    {% endif %}
+                    {% if m.resume.candidate_email %}<p><strong>Email:</strong> {{ m.resume.candidate_email }}</p>{% endif %}
+                    {% if m.resume.candidate_phone %}<p><strong>Phone:</strong> {{ m.resume.candidate_phone }}</p>{% endif %}
+                </div>
+                <div class="col-md-6">
+                    <canvas id="radarChart{{ m.match_id }}" width="300" height="300"></canvas>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   {% else %}
-    <div class="card border-0 shadow-sm">
+    <div class="card glass-panel shadow-sm">
       <div class="card-body text-center py-5 text-muted">
-        <i class="fas fa-circle-question fa-3x mb-3 opacity-50 d-block"></i>
+        <i class="fas fa-circle-question fa-3x mb-3 opacity-50 d-block text-primary"></i>
         No results yet. Upload some resumes first then re-run matching.
       </div>
     </div>
@@ -178,7 +191,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>

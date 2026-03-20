@@ -40,24 +40,32 @@ def run_match():
             flash("You haven't uploaded any resumes yet.", "warning")
             return redirect(url_for("resume.upload_resume"))
 
-        # run scoring for each resume
+        # sabka score nikalte hai
         count = 0
         from datetime import datetime, timezone
         for r in resumes:
             result = score_resume_for_job(r, jd)
 
-            # Manually find existing match
+            # check karo pehle se hai kya match
             existing = None
             for m in MatchResult.query_by_resume(r.resume_id):
                 if m.jd_id == jd.jd_id:
                     existing = m
                     break
 
+            fb = None
+            if result["label"] in ["Maybe", "Rejected"]:
+                if result["missing"]:
+                    fb = f"To improve your chances, focus on acquiring these missing skills: {', '.join(result['missing'][:5])}."
+                else:
+                    fb = "Consider gaining more targeted experience corresponding to the job description."
+
             if existing:
                 existing.relevance_score = result["score"]
                 existing.shortlist_label = result["label"]
                 existing.matched_skills  = ", ".join(result["matched"])
                 existing.missing_skills  = ", ".join(result["missing"])
+                existing.feedback        = fb
                 existing.created_at      = datetime.now(timezone.utc).isoformat()
                 existing.save()
             else:
@@ -68,6 +76,7 @@ def run_match():
                     shortlist_label = result["label"],
                     matched_skills  = ", ".join(result["matched"]),
                     missing_skills  = ", ".join(result["missing"]),
+                    feedback        = fb
                 )
                 match.save()
             count += 1
@@ -90,7 +99,7 @@ def match_results(jd_id):
         flash("Not allowed to view these results.", "danger")
         return redirect(url_for("match.run_match"))
 
-    # Fetch matches and filter manually for user_id to emulate SQL JOIN
+    # manual filter marna pad raha hai sql join nai hai
     raw_matches = MatchResult.query_by_jd(jd.jd_id)
     matches = []
     for m in raw_matches:

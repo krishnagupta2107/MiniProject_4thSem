@@ -1,6 +1,6 @@
-// main.js – small UI enhancements
+// thoda style fix karne js
 
-// auto-dismiss flash alerts after 5 seconds
+// 5 sec baad flash hatado
 document.addEventListener("DOMContentLoaded", () => {
   const alerts = document.querySelectorAll(".alert.alert-dismissible");
   alerts.forEach((el) => {
@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 5000);
   });
 
-  // highlight nav link based on current page
-  // (already handled by Jinja, but this is a fallback)
+  // active nav item dikhane ke liye
+  // jinja ka fallback
   const currentPath = window.location.pathname;
   document.querySelectorAll(".nav-link").forEach((link) => {
     if (link.getAttribute("href") === currentPath) {
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // file input - show filename in label
+  // file ka naam label mein dalo
   const fileInputs = document.querySelectorAll('input[type="file"]');
   fileInputs.forEach((input) => {
     input.addEventListener("change", () => {

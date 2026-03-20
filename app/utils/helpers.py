@@ -10,8 +10,8 @@ from flask import request, flash, redirect, url_for, jsonify
 from flask_login import current_user
 
 
-# ---------- in-memory rate limiter ----------
-# Simple enough for a mini-project, wouldn't use this in prod
+# sasta rate limiter
+# prod mein kon hi use karega ye lol
 
 _rate_store: dict = {}
 
@@ -39,7 +39,7 @@ def rate_limit(bucket: str, limit: int = 10, window: int = 60):
     return decorator
 
 
-# ---------- admin access decorator ----------
+# admin roko
 
 def admin_required(fn):
     @wraps(fn)

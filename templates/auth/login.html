@@ -2,50 +2,55 @@
 {% block title %}Login – HireMatch{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4 p-md-5">
-          <h4 class="fw-bold mb-1">Welcome back</h4>
-          <p class="text-muted mb-4">Log in to your HireMatch account.</p>
+<div class="auth-wrapper">
+  <div class="card auth-card glass-panel shadow-lg">
+    <div class="text-center mb-4">
+      <h3 class="fw-bold mb-2">Welcome Back</h3>
+      <p class="text-muted">Log in to your HireMatch account</p>
+    </div>
 
-          <button type="button" class="btn btn-outline-dark w-100 py-2 mb-3" id="googleAuthBtn">
-            <i class="fab fa-google text-danger me-2"></i>Sign in with Google
-          </button>
-          
-          <div class="d-flex align-items-center mb-3">
-             <hr class="flex-grow-1">
-             <span class="px-3 text-muted small">OR</span>
-             <hr class="flex-grow-1">
-          </div>
+    <button type="button" class="btn btn-light border w-100 py-2 mb-3 fw-semibold d-flex align-items-center justify-content-center hover-lift" id="googleAuthBtn">
+        <i class="fab fa-google text-danger me-2"></i> Continue with Google
+    </button>
+    
+    <div class="d-flex align-items-center mb-4">
+       <hr class="flex-grow-1 opacity-25">
+       <span class="px-3 text-muted small fw-medium">OR EMAIL</span>
+       <hr class="flex-grow-1 opacity-25">
+    </div>
 
-          <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
-            <div class="mb-3">
-              <label class="form-label fw-medium">Email</label>
-              <input type="email" name="email" class="form-control" placeholder="you@example.com"
-                     value="{{ request.form.get('email', '') }}" required/>
-            </div>
-
-            <div class="mb-4">
-              <label class="form-label fw-medium">Password</label>
-              <input type="password" name="password" class="form-control" placeholder="••••••••" required/>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 py-2">
-              <i class="fas fa-arrow-right-to-bracket me-2"></i>Log In
-            </button>
-          </form>
-
-          <hr class="my-4"/>
-          <p class="text-center text-muted mb-0 small">
-            Don't have an account?
-            <a href="{{ url_for('auth.register') }}" class="text-primary fw-medium">Create one</a>
-          </p>
+      <div class="mb-3">
+        <label class="form-label fw-bold small text-muted text-uppercase">Email Address</label>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
+          <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="you@example.com"
+                 value="{{ request.form.get('email', '') }}" required/>
         </div>
       </div>
+
+      <div class="mb-4">
+        <div class="d-flex justify-content-between">
+          <label class="form-label fw-bold small text-muted text-uppercase">Password</label>
+        </div>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+          <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="••••••••" required/>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow">
+        Log In <i class="fas fa-arrow-right ms-2"></i>
+      </button>
+    </form>
+
+    <div class="mt-4 text-center">
+      <p class="text-muted small mb-0">
+        Don't have an account?
+        <a href="{{ url_for('auth.register') }}" class="fw-bold text-primary text-decoration-none">Create one</a>
+      </p>
     </div>
   </div>
 </div>

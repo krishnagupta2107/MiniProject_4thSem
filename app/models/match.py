@@ -6,7 +6,7 @@ def _gen_uuid():
 
 class MatchResult:
     def __init__(self, match_id=None, resume_id="", jd_id="", relevance_score=0.0,
-                 shortlist_label=None, matched_skills=None, missing_skills=None, created_at=None):
+                 shortlist_label=None, matched_skills=None, missing_skills=None, created_at=None, feedback=None):
         self.match_id = match_id or _gen_uuid()
         self.resume_id = resume_id
         self.jd_id = jd_id
@@ -14,6 +14,7 @@ class MatchResult:
         self.shortlist_label = shortlist_label
         self.matched_skills = matched_skills
         self.missing_skills = missing_skills
+        self.feedback = feedback
         if created_at is None:
             self.created_at = datetime.now(timezone.utc)
         elif isinstance(created_at, str):
@@ -40,6 +41,7 @@ class MatchResult:
             "shortlist_label": self.shortlist_label,
             "matched_skills": self.matched_skills,
             "missing_skills": self.missing_skills,
+            "feedback": self.feedback,
             "created_at": self.created_at.isoformat() if hasattr(self.created_at, "isoformat") else self.created_at
         }
 
@@ -53,6 +55,7 @@ class MatchResult:
             shortlist_label=data.get("shortlist_label"),
             matched_skills=data.get("matched_skills"),
             missing_skills=data.get("missing_skills"),
+            feedback=data.get("feedback"),
             created_at=data.get("created_at")
         )
 
@@ -92,7 +95,7 @@ class MatchResult:
         docs = db.collection("match_results").stream()
         return [MatchResult.from_dict(doc.to_dict()) for doc in docs]
 
-    # Helper property to mimic SQLAlchemy relations in templates
+    # relational db jaisi property
     @property
     def resume(self):
         from app.models.resume import Resume

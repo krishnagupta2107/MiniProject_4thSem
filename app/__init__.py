@@ -9,7 +9,7 @@ from firebase_admin import credentials, firestore
 
 from config import Config
 
-# extensions - initialized without app, attached later
+# baaki sab load karte hai
 db = None
 login_manager = LoginManager()
 csrf = CSRFProtect()
@@ -19,25 +19,25 @@ def create_app(config_class=Config):
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
     app.config.from_object(config_class)
 
-    # make sure upload and instance dirs exist
+    # folder bana lo warna path error aayega
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
     os.makedirs(os.path.join(os.path.dirname(__file__), "..", "instance"), exist_ok=True)
 
     global db
     if not firebase_admin._apps:
-        # Check if we are in production (Render) with credentials in the environment
+        # production key check krlo
         firebase_json_str = os.environ.get("FIREBASE_JSON")
         if firebase_json_str:
             import json
             cred_dict = json.loads(firebase_json_str)
             cred = credentials.Certificate(cred_dict)
         else:
-            # Fallback to local file for development
+            # local key try maro
             cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "..", "resume-checker-key.json"))
         firebase_admin.initialize_app(cred)
     db = firestore.client()
 
-    # attach extensions
+    # extension chalu
     csrf.init_app(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -46,7 +46,7 @@ def create_app(config_class=Config):
     login_manager.login_message = "Please log in first."
     login_manager.login_message_category = "warning"
 
-    # register blueprints
+    # blueprints dalo
     from app.routes.auth    import auth_bp
     from app.routes.main    import main_bp
     from app.routes.resume  import resume_bp
@@ -72,7 +72,7 @@ def create_app(config_class=Config):
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
         response.headers['X-XSS-Protection'] = '1; mode=block'
-        # Basic Content-Security-Policy to allow Bootstrap/CDN
+        # csp policy cdn allow karne ke liye
         csp = (
     "default-src 'self'; "
     "connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com "

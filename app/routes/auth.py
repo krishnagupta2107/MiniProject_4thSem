@@ -24,7 +24,7 @@ def register():
         password = request.form.get("password", "")
         confirm  = request.form.get("confirm_password", "")
 
-        # basic validation
+        # check karlo sab theek hai kya
         error = None
         if not email or not name or not password:
             error = "All fields are required."
@@ -100,7 +100,7 @@ def reset_request():
         if user:
             token = get_reset_token(user.user_id)
             reset_url = url_for("auth.reset_token", token=token, _external=True)
-            # Mock email sending by flashing the link
+            # real email kon banayega flash hi kardo lol
             flash(f"Mock Email Sent! Reset Link: {reset_url}", "info")
         else:
             flash("If an account exists for that email, a reset link has been sent.", "info")
@@ -146,7 +146,7 @@ def google_auth():
 
         user = User.query_by_email(email)
         if not user:
-            # Create user on the fly since they authenticated via Google
+            # naya banda google se aaya
             user = User(email=email, full_name=name)
             user.set_password(secrets.token_urlsafe(32))
             user.save()

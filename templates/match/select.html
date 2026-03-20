@@ -6,13 +6,13 @@
   <div class="row justify-content-center">
     <div class="col-lg-6">
 
-      <h4 class="fw-bold mb-1">Run Resume Matching</h4>
-      <p class="text-muted mb-4">
+      <h3 class="fw-bold mb-1">Run Resume Matching</h3>
+      <p class="text-secondary mb-4">
         Select a job description and we'll score all your resumes against it.
       </p>
 
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
+      <div class="card glass-panel shadow-sm">
+        <div class="card-body p-4 p-md-5">
           {% if jobs %}
             <form method="POST" action="{{ url_for('match.run_match') }}" novalidate>
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -29,7 +29,7 @@
                 </select>
               </div>
 
-              <button type="submit" class="btn btn-primary w-100 py-2">
+              <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm hover-lift fw-bold">
                 <i class="fas fa-bolt me-2"></i>Run Matching
               </button>
             </form>

@@ -13,15 +13,15 @@
         </ol>
       </nav>
 
-      <h4 class="fw-bold mb-1">Upload a Resume</h4>
-      <p class="text-muted mb-4">We'll extract skills, experience, and education automatically.</p>
+      <h3 class="fw-bold mb-1">Upload a Resume</h3>
+      <p class="text-secondary mb-4">We'll extract skills, experience, and education automatically.</p>
 
-      <div class="card border-0 shadow-sm">
+      <div class="card glass-panel shadow-sm">
         <div class="card-body p-4">
           <form method="POST" enctype="multipart/form-data" action="{{ url_for('resume.upload_resume') }}" novalidate>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
-            <!-- file upload -->
+            <!-- PDF aur DOCX yaha aayega -->
             <div class="mb-4">
               <label class="form-label fw-medium">Upload Files</label>
               <input type="file" name="resume_file" class="form-control"
@@ -34,7 +34,7 @@
               <hr class="position-absolute top-50 start-0 end-0 m-0" style="z-index:-1"/>
             </div>
 
-            <!-- text paste -->
+            <!-- direct text paste ka jugaad -->
             <div class="mb-4">
               <label class="form-label fw-medium">Paste Resume Text</label>
               <textarea name="resume_text" class="form-control font-monospace" rows="10"
@@ -42,10 +42,10 @@
             </div>
 
             <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary px-4">
+              <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm hover-lift fw-bold">
                 <i class="fas fa-wand-magic-sparkles me-2"></i>Parse & Save
               </button>
-              <a href="{{ url_for('resume.list_resumes') }}" class="btn btn-outline-secondary">
+              <a href="{{ url_for('resume.list_resumes') }}" class="btn btn-light border rounded-pill px-4 hover-lift fw-medium">
                 Cancel
               </a>
             </div>

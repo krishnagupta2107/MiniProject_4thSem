@@ -31,10 +31,10 @@ def admin_dashboard():
         "matches": len(all_matches),
     }
 
-    # sort logic for descending created_at
+    # naya wala upar!
     recent_users = sorted(all_users, key=lambda x: x.created_at, reverse=True)[:10]
 
-    # Chart 1: Matches by Label
+    # pehla graph
     labels_count = {}
     for m in all_matches:
         label = m.shortlist_label or "Unknown"
@@ -43,7 +43,7 @@ def admin_dashboard():
     chart_matches_labels = list(labels_count.keys())
     chart_matches_data = list(labels_count.values())
 
-    # Chart 2: Database Overview
+    # doosra view
     chart_overview_labels = ['Users', 'Resumes', 'Job Descriptions', 'Matches']
     chart_overview_data = [stats['users'], stats['resumes'], stats['jobs'], stats['matches']]
 

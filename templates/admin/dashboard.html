@@ -4,12 +4,12 @@
 {% block content %}
 <div class="container py-5">
 
-  <div class="mb-4">
-    <h4 class="fw-bold mb-0"><i class="fas fa-shield-halved me-2 text-danger"></i>Admin Dashboard</h4>
-    <p class="text-muted">System overview and user management.</p>
+  <div class="mb-5 bg-white bg-opacity-50 p-4 rounded-4 shadow-sm border glass-panel">
+    <h3 class="fw-bold mb-2"><i class="fas fa-shield-halved me-3 text-danger"></i>Admin Dashboard</h3>
+    <p class="text-secondary mb-0">System overview and user management.</p>
   </div>
 
-  <!-- stat cards -->
+  <!-- admin ke stats -->
   <div class="row g-3 mb-5">
     {% for label, val, icon, color in [
         ('Total Users',   stats.users,   'users',      'primary'),
@@ -18,7 +18,7 @@
         ('Matches Run',   stats.matches, 'bolt',       'danger'),
     ] %}
     <div class="col-6 col-md-3">
-      <div class="card border-0 shadow-sm">
+      <div class="card glass-panel hover-lift">
         <div class="card-body p-4 text-center">
           <div class="mb-2 text-{{ color }}">
             <i class="fas fa-{{ icon }} fa-lg"></i>
@@ -31,10 +31,10 @@
     {% endfor %}
   </div>
 
-  <!-- charts -->
+  <!-- admin graphs -->
   <div class="row g-3 mb-5">
     <div class="col-md-6">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card glass-panel shadow-sm h-100">
         <div class="card-body p-4">
           <h6 class="fw-semibold mb-3">Database Overview</h6>
           <canvas id="overviewChart"></canvas>
@@ -51,8 +51,8 @@
     </div>
   </div>
 
-  <!-- recent users -->
-  <div class="card border-0 shadow-sm">
+  <!-- naye bache -->
+  <div class="card glass-panel shadow-sm">
     <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0">
       <h6 class="fw-semibold mb-0">Recent Users</h6>
     </div>
@@ -89,7 +89,7 @@
 </div>
 </div>
 
-<!-- Include Chart.js -->
+<!-- chart import -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
