@@ -1,77 +1,87 @@
 {% extends "base.html" %}
+<!-- upar dikhne wala naam -->
 {% block title %}Dashboard – HireMatch{% endblock %}
 
 {% block content %}
 <div class="container py-5">
 
-  <!-- user ka h1 wagera -->
-  <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-2">
+  <!-- welcome msg aur shortcuts wala section yaha hai -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-4">
     <div>
-      <h3 class="fw-bold mb-1">Hi, {{ current_user.full_name.split()[0] }} 👋</h3>
-      <p class="text-secondary mb-0">Here's what's going on with your account.</p>
+      <h2 class="fw-bolder mb-2 text-dark" style="letter-spacing: -0.02em;">Welcome back, {{ current_user.full_name.split()[0] }} <span class="text-warning">👋</span></h2>
+      <p class="text-muted mb-0 fw-medium fs-6">Here's your recruiting and matching overview for today.</p>
     </div>
-    <div class="d-flex gap-3">
-      <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-light shadow-sm fw-medium px-4 border rounded-pill hover-lift">
+    <div class="d-flex gap-2 gap-sm-3 flex-wrap">
+      <!-- ek add resume ka chota sa secondary button -->
+      <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-white shadow-sm fw-bold px-4 rounded-pill hover-lift border d-flex align-items-center bg-white text-dark">
         <i class="fas fa-plus me-2 text-primary"></i> Add Resume
       </a>
-      <a href="{{ url_for('match.run_match') }}" class="btn btn-primary shadow-sm fw-medium px-4 rounded-pill hover-lift">
-        <i class="fas fa-bolt me-2"></i> Run Match
+      <!-- bada primary gradient button run match karne ke liye -->
+      <a href="{{ url_for('match.run_match') }}" class="btn btn-primary shadow-sm fw-bold px-4 rounded-pill hover-lift d-flex align-items-center">
+        <i class="fas fa-bolt me-2 text-warning"></i> Run Match
       </a>
     </div>
   </div>
 
-  <!-- ginti dikhane ke liye -->
-  <div class="row g-3 mb-4">
-    <div class="col-6 col-md-4">
-      <div class="card glass-panel hover-lift h-100">
-        <div class="card-body d-flex align-items-center gap-3">
-          <div class="stat-icon bg-primary bg-opacity-10 text-primary rounded-3 p-3">
+  <!-- total count dikhane wale 3 cards -->
+  <div class="row g-4 mb-5">
+    
+    <!-- resumes ka ginti -->
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+        <div class="card-body p-4 d-flex align-items-center gap-4">
+          <div class="stat-icon bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 rounded-4 p-3" style="width: 64px; height: 64px;">
             <i class="fas fa-file-lines fa-lg"></i>
           </div>
           <div>
-            <div class="fs-2 fw-bold">{{ stats.resumes }}</div>
-            <div class="text-muted small">Resumes</div>
+            <div class="text-muted fw-semibold small text-uppercase mb-1" style="letter-spacing: 0.05em;">Total Resumes</div>
+            <div class="fs-1 fw-bolder text-dark" style="line-height: 1;">{{ stats.resumes }}</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-6 col-md-4">
-      <div class="card glass-panel hover-lift h-100">
-        <div class="card-body d-flex align-items-center gap-3">
-          <div class="stat-icon bg-success bg-opacity-10 text-success rounded-3 p-3">
+    
+    <!-- jobs ki ginti -->
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+        <div class="card-body p-4 d-flex align-items-center gap-4">
+          <div class="stat-icon bg-success bg-opacity-10 text-success border border-success border-opacity-10 rounded-4 p-3" style="width: 64px; height: 64px;">
             <i class="fas fa-briefcase fa-lg"></i>
           </div>
           <div>
-            <div class="fs-2 fw-bold">{{ stats.jobs }}</div>
-            <div class="text-muted small">Job Descriptions</div>
+            <div class="text-muted fw-semibold small text-uppercase mb-1" style="letter-spacing: 0.05em;">Total Jobs</div>
+            <div class="fs-1 fw-bolder text-dark" style="line-height: 1;">{{ stats.jobs }}</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-4">
-      <div class="card glass-panel hover-lift h-100">
-        <div class="card-body d-flex align-items-center gap-3">
-          <div class="stat-icon bg-warning bg-opacity-10 text-warning rounded-3 p-3">
-            <i class="fas fa-bolt fa-lg"></i>
+    
+    <!-- matches kitne hue total -->
+    <div class="col-12 col-lg-4">
+      <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
+        <div class="card-body p-4 d-flex align-items-center gap-4">
+          <div class="stat-icon bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-4 p-3" style="width: 64px; height: 64px;">
+            <i class="fas fa-bolt fa-lg text-dark"></i>
           </div>
           <div>
-            <div class="fs-2 fw-bold">{{ stats.matches }}</div>
-            <div class="text-muted small">Matches Run</div>
+            <div class="text-muted fw-semibold small text-uppercase mb-1" style="letter-spacing: 0.05em;">Matches Run</div>
+            <div class="fs-1 fw-bolder text-dark" style="line-height: 1;">{{ stats.matches }}</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- graph area -->
-  <div class="row g-4 mb-4">
+  <!-- bich me graph (chart) dikhane wala naya canvas container -->
+  <div class="row mb-5">
     <div class="col-12">
-      <div class="card glass-panel shadow-sm">
-        <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
-          <h6 class="fw-semibold mb-0">Aggregate Match Analytics (Recent)</h6>
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0 text-dark">Match Overview Analytics</h5>
+          <span class="badge bg-light text-muted border">Recent Data</span>
         </div>
-        <div class="card-body px-4">
-            <div style="height: 250px; display: flex; justify-content: center;">
+        <div class="card-body px-4 pb-4">
+            <div style="height: 280px; display: flex; justify-content: center; position: relative;">
                 <canvas id="matchAnalyticsChart"></canvas>
             </div>
         </div>
@@ -79,120 +89,144 @@
     </div>
   </div>
 
+  <!-- list views (hal filhal k resumes aur jobs) -->
   <div class="row g-4">
 
-    <!-- naye wale resume -->
+    <!-- left list: recently added resumes -->
     <div class="col-lg-6">
-      <div class="card glass-panel shadow-sm h-100">
-        <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
-          <h6 class="fw-semibold mb-0">Recent Resumes</h6>
-          <a href="{{ url_for('resume.list_resumes') }}" class="btn btn-link btn-sm p-0 text-decoration-none">View all</a>
+      <div class="card border-0 shadow-sm h-100 rounded-4 bg-white">
+        <div class="card-header bg-white border-bottom pt-4 px-4 pb-3 d-flex justify-content-between align-items-center">
+          <h6 class="fw-bold mb-0 text-dark fs-5">Fresh Resumes</h6>
+          <a href="{{ url_for('resume.list_resumes') }}" class="btn btn-light btn-sm fw-medium rounded-pill text-primary border px-3">View All</a>
         </div>
-        <div class="card-body px-4">
+        <div class="card-body p-0">
           {% if resumes %}
-            {% for r in resumes %}
-            <div class="d-flex align-items-center py-2 {% if not loop.last %}border-bottom{% endif %}">
-              <div class="resume-avatar me-3">
-                <i class="fas fa-file-pdf text-danger"></i>
-              </div>
-              <div class="flex-grow-1 min-w-0">
-                <div class="fw-medium text-truncate">{{ r.candidate_name or r.filename }}</div>
-                <div class="text-muted small">
-                  {{ r.skills_list()|length }} skills
-                  {% if r.experience_years %} · {{ r.experience_years }}y exp{% endif %}
+            <div class="list-group list-group-flush rounded-bottom-4">
+              {% for r in resumes %}
+              <div class="list-group-item px-4 py-3 border-bottom d-flex align-items-center p-list-hover">
+                <div class="d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-3 me-3" style="min-width: 48px; height: 48px;">
+                  <i class="fas fa-file-pdf fs-5"></i>
                 </div>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-bold text-dark text-truncate fs-6">{{ r.candidate_name or r.filename }}</div>
+                  <div class="text-muted small fw-medium mt-1 d-flex align-items-center gap-2">
+                    <span class="badge bg-light text-dark border">{{ r.skills_list()|length }} Skills</span>
+                    {% if r.experience_years %}
+                      <span class="text-muted"><i class="fas fa-circle" style="font-size: 4px; vertical-align: middle;"></i></span>
+                      <span>{{ r.experience_years }} Yrs Exp</span>
+                    {% endif %}
+                  </div>
+                </div>
+                <a href="{{ url_for('resume.view_resume', resume_id=r.resume_id) }}"
+                   class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill px-3 ms-2">View</a>
               </div>
-              <a href="{{ url_for('resume.view_resume', resume_id=r.resume_id) }}"
-                 class="btn btn-sm btn-outline-secondary ms-2">View</a>
+              {% endfor %}
             </div>
-            {% endfor %}
           {% else %}
-            <div class="text-center py-4 text-muted">
-              <i class="fas fa-file-circle-plus fa-2x mb-2 d-block text-muted opacity-50"></i>
-              No resumes yet.
-              <a href="{{ url_for('resume.upload_resume') }}">Upload one</a>
+            <!-- agar koi bhi resume nai hai to yaha dhikhao -->
+            <div class="text-center py-5 text-muted">
+              <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fas fa-file-circle-plus fa-2x text-secondary opacity-50"></i>
+              </div>
+              <p class="mb-2 fw-medium">No resumes uploaded yet.</p>
+              <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold">Upload New</a>
             </div>
           {% endif %}
         </div>
       </div>
     </div>
 
-    <!-- naye jobs -->
+    <!-- right list: newly posted job desc -->
     <div class="col-lg-6">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
-          <h6 class="fw-semibold mb-0">Recent Job Descriptions</h6>
-          <a href="{{ url_for('job.list_jobs') }}" class="btn btn-link btn-sm p-0 text-decoration-none">View all</a>
+      <div class="card border-0 shadow-sm h-100 rounded-4 bg-white">
+        <div class="card-header bg-white border-bottom pt-4 px-4 pb-3 d-flex justify-content-between align-items-center">
+          <h6 class="fw-bold mb-0 text-dark fs-5">Recent Job Posts</h6>
+          <a href="{{ url_for('job.list_jobs') }}" class="btn btn-light btn-sm fw-medium rounded-pill text-primary border px-3">View All</a>
         </div>
-        <div class="card-body px-4">
+        <div class="card-body p-0">
           {% if job_descs %}
-            {% for j in job_descs %}
-            <div class="d-flex align-items-center py-2 {% if not loop.last %}border-bottom{% endif %}">
-              <div class="resume-avatar me-3">
-                <i class="fas fa-briefcase text-primary"></i>
-              </div>
-              <div class="flex-grow-1 min-w-0">
-                <div class="fw-medium text-truncate">{{ j.title }}</div>
-                <div class="text-muted small">
-                  {{ j.company or "Company not specified" }}
-                  · {{ j.skills_list()|length }} skills
+            <div class="list-group list-group-flush rounded-bottom-4">
+              {% for j in job_descs %}
+              <div class="list-group-item px-4 py-3 border-bottom d-flex align-items-center p-list-hover">
+                <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-3 me-3" style="min-width: 48px; height: 48px;">
+                  <i class="fas fa-briefcase fs-5"></i>
                 </div>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-bold text-dark text-truncate fs-6">{{ j.title }}</div>
+                  <div class="text-muted small fw-medium mt-1">
+                    <i class="far fa-building me-1"></i> {{ j.company or "Company not specified" }}
+                    <span class="mx-2 text-light">|</span> 
+                    {{ j.skills_list()|length }} Required Skills
+                  </div>
+                </div>
+                <a href="{{ url_for('job.view_jd', jd_id=j.jd_id) }}"
+                   class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill px-3 ms-2">View</a>
               </div>
-              <a href="{{ url_for('job.view_jd', jd_id=j.jd_id) }}"
-                 class="btn btn-sm btn-outline-secondary ms-2">View</a>
+              {% endfor %}
             </div>
-            {% endfor %}
           {% else %}
-            <div class="text-center py-4 text-muted">
-              <i class="fas fa-briefcase fa-2x mb-2 d-block text-muted opacity-50"></i>
-              No job descriptions yet.
-              <a href="{{ url_for('job.upload_jd') }}">Add one</a>
+            <!-- agar koi job hi nai hai to idhar dhikhao -->
+            <div class="text-center py-5 text-muted">
+              <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="fas fa-briefcase fa-2x text-secondary opacity-50"></i>
+              </div>
+              <p class="mb-2 fw-medium">No job descriptions added yet.</p>
+              <a href="{{ url_for('job.upload_jd') }}" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold">Add Job</a>
             </div>
           {% endif %}
         </div>
       </div>
     </div>
 
-    <!-- naya result -->
+    <!-- thoda niche recent matches ka table (agar kuch match hue hai tabhi dikhega) -->
     {% if recent_matches %}
-    <div class="col-12">
-      <div class="card glass-panel shadow-sm">
-        <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
-          <h6 class="fw-semibold mb-0">Recent Match Results</h6>
+    <div class="col-12 mt-4">
+      <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+          <h5 class="fw-bold mb-0 text-dark">Latest Matches</h5>
         </div>
-        <div class="card-body px-4">
+        <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light">
+            <table class="table table-hover align-middle mb-0 border-0">
+              <thead class="bg-light text-muted small text-uppercase" style="letter-spacing: 0.05em;">
                 <tr>
-                  <th>Candidate</th>
-                  <th>Job</th>
-                  <th>Score</th>
-                  <th>Label</th>
+                  <th class="ps-4 py-3 fw-bold border-bottom-0">Candidate Details</th>
+                  <th class="py-3 fw-bold border-bottom-0">Target Job</th>
+                  <th class="py-3 fw-bold border-bottom-0">Match Score</th>
+                  <th class="pe-4 py-3 fw-bold border-bottom-0 text-end">AI Decision</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="border-top-0">
                 {% for m in recent_matches %}
                 <tr>
-                  <td>{{ m.resume.candidate_name or m.resume.filename }}</td>
-                  <td>{{ m.job_description.title }}</td>
-                  <td>
-                    <div class="d-flex align-items-center gap-2">
-                      <div class="progress flex-grow-1" style="height:6px; width:80px;">
-                        <div class="progress-bar
+                  <!-- candidate ka naam aur chota id -->
+                  <td class="ps-4 py-3">
+                    <div class="fw-bold text-dark">{{ m.resume.candidate_name or m.resume.filename }}</div>
+                    <div class="text-muted small">ID: #{{ m.resume_id|string|truncate(8, True, '') }}</div>
+                  </td>
+                  <!-- konsi job apply kri hai wo dekho -->
+                  <td class="py-3">
+                    <div class="fw-medium text-dark">{{ m.job_description.title }}</div>
+                  </td>
+                  <!-- percentage bar ekdum mast wala jske lie bootstrap classes hai -->
+                  <td class="py-3">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="progress flex-grow-1 bg-light rounded-pill" style="height: 8px; max-width: 120px; box-shadow: none;">
+                        <div class="progress-bar rounded-pill
                           {% if m.relevance_score >= 70 %}bg-success
                           {% elif m.relevance_score >= 45 %}bg-warning
                           {% else %}bg-danger{% endif %}"
                           style="width:{{ m.relevance_score }}%"></div>
                       </div>
-                      <span class="fw-semibold small">{{ m.relevance_score }}</span>
+                      <span class="fw-bold fs-6">{{ m.relevance_score }}%</span>
                     </div>
                   </td>
-                  <td>
-                    <span class="badge rounded-pill
-                      {% if m.shortlist_label == 'Shortlisted' %}bg-success
-                      {% elif m.shortlist_label == 'Maybe' %}bg-warning text-dark
-                      {% else %}bg-danger{% endif %}">
+                  <!-- kon pass kon fail wala column -->
+                  <td class="pe-4 py-3 text-end">
+                    <span class="badge border
+                      {% if m.shortlist_label == 'Shortlisted' %}bg-success bg-opacity-10 text-success border-success
+                      {% elif m.shortlist_label == 'Maybe' %}bg-warning bg-opacity-10 text-warning border-warning
+                      {% else %}bg-danger bg-opacity-10 text-danger border-danger{% endif %} px-3 py-2 rounded-pill fw-bold">
                       {{ m.shortlist_label }}
                     </span>
                   </td>
@@ -211,10 +245,11 @@
 {% endblock %}
 
 {% block scripts %}
+<!-- chart js ka script CDN se arha hai -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // Generate Match Ratio Data
+    // doughnut chart banane ke liye values yaha generate kar rhe
     const labels = ["Shortlisted", "Maybe", "Rejected"];
     const counts = [0, 0, 0];
     
@@ -225,30 +260,48 @@ document.addEventListener("DOMContentLoaded", () => {
         {% endif %}
     {% endfor %}
     
+    // agar minimum ek entry hogi to chart dikhega bhai nahi to warning msg de denge
     if (counts.reduce((a,b)=>a+b, 0) > 0) {
         const ctx = document.getElementById('matchAnalyticsChart').getContext('2d');
+        // gradient colors code me pass krunga mst lagega chart
+        const greenGrad = ctx.createLinearGradient(0,0,0,400); greenGrad.addColorStop(0, '#22c55e'); greenGrad.addColorStop(1, '#16a34a');
+        const yellowGrad = ctx.createLinearGradient(0,0,0,400); yellowGrad.addColorStop(0, '#facc15'); yellowGrad.addColorStop(1, '#ca8a04');
+        const redGrad = ctx.createLinearGradient(0,0,0,400); redGrad.addColorStop(0, '#ef4444'); redGrad.addColorStop(1, '#dc2626');
+
         new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: labels,
                 datasets: [{
                     data: counts,
-                    backgroundColor: ['#198754', '#ffc107', '#dc3545'],
-                    borderWidth: 0
+                    backgroundColor: [greenGrad, yellowGrad, redGrad],
+                    borderWidth: 0,
+                    hoverOffset: 4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                cutout: '70%',
                 plugins: {
-                    legend: { position: 'right' }
+                    legend: { position: 'right', labels: { usePointStyle: true, padding: 20, font: { family: "'Plus Jakarta Sans', sans-serif", size: 13, weight: '500' } } }
                 }
             }
         });
     } else {
+        // jab data na mile to error wala div idhar chipka do
         document.getElementById('matchAnalyticsChart').parentElement.innerHTML = 
-            "<div class='text-muted d-flex align-items-center justify-content-center h-100 vh-100'>No recent matches to analyze.</div>";
+            "<div class='text-muted d-flex flex-column align-items-center justify-content-center h-100'>" +
+            "<i class='fas fa-chart-pie fa-2x mb-2 opacity-25'></i>" +
+            "<span class='fw-medium'>No match data to display yet.</span>" +
+            "</div>";
     }
 });
 </script>
+
+<style>
+/* choti si css class list items ko list-hover krne pe background dark kr degi */
+.p-list-hover { transition: all 0.2s; }
+.p-list-hover:hover { background-color: #f8fafc; }
+</style>
 {% endblock %}

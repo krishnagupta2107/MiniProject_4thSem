@@ -1,39 +1,56 @@
 {% extends "base.html" %}
+<!-- JD title dekho -->
 {% block title %}{{ jd.title }} – HireMatch{% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-lg-8 col-xl-9">
 
-      <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-          <li class="breadcrumb-item"><a href="{{ url_for('job.list_jobs') }}">Jobs</a></li>
-          <li class="breadcrumb-item active">{{ jd.title }}</li>
+      <!-- breadcrumbs top niku wgr -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0 px-3 py-2 bg-white rounded-pill shadow-sm d-inline-flex border">
+          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}" class="text-decoration-none fw-medium text-muted"><i class="fas fa-home me-1"></i> Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('job.list_jobs') }}" class="text-decoration-none fw-medium text-muted">Jobs</a></li>
+          <li class="breadcrumb-item active fw-bold text-primary text-truncate" style="max-width: 150px;" aria-current="page">{{ jd.title }}</li>
         </ol>
       </nav>
 
-      <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-            <div>
-              <h5 class="fw-bold mb-1">{{ jd.title }}</h5>
-              <div class="text-muted small">
-                {% if jd.company %}<i class="fas fa-building me-1"></i>{{ jd.company }}&nbsp;·&nbsp;{% endif %}
-                {% if jd.location %}<i class="fas fa-location-dot me-1"></i>{{ jd.location }}&nbsp;·&nbsp;{% endif %}
-                <i class="fas fa-clock me-1"></i>{{ jd.created_at.strftime('%d %b %Y') }}
+      <!-- main JD detail card header -->
+      <div class="card border-0 shadow-sm mb-4 rounded-4 bg-white overflow-hidden">
+        <div class="card-body p-4 p-sm-5 position-relative">
+          <!-- design icon bg -->
+          <i class="fas fa-briefcase position-absolute text-success opacity-10" style="font-size: 150px; right: 20px; top: -20px; z-index: 0; transform: rotate(-10deg);"></i>
+          
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-4 position-relative z-1">
+            <div class="d-flex align-items-center gap-4">
+              <!-- avatar icon -->
+              <div class="d-flex align-items-center justify-content-center bg-success text-white rounded-circle shadow-sm" style="width: 70px; height: 70px; font-size: 1.5rem;">
+                <i class="fas fa-building"></i>
+              </div>
+              <div>
+                <h3 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.01em;">{{ jd.title }}</h3>
+                <div class="d-flex flex-wrap align-items-center gap-3 mt-2">
+                  {% if jd.company %}
+                    <span class="badge bg-light text-dark border px-2 py-1 fw-medium"><i class="fas fa-building me-1 text-muted"></i>{{ jd.company }}</span>
+                  {% endif %}
+                  {% if jd.location %}
+                    <span class="badge bg-light text-dark border px-2 py-1 fw-medium"><i class="fas fa-location-dot me-1 text-muted"></i>{{ jd.location }}</span>
+                  {% endif %}
+                  <span class="text-muted small fw-medium"><i class="far fa-clock me-1"></i>Created {{ jd.created_at.strftime('%d %b %Y') }}</span>
+                </div>
               </div>
             </div>
+            
             <div class="d-flex gap-2">
-              <a href="{{ url_for('match.run_match') }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-bolt me-1"></i>Run Matching
+              <a href="{{ url_for('match.run_match') }}" class="btn btn-primary rounded-pill shadow-sm hover-lift fw-bold px-4">
+                <i class="fas fa-robot me-2 text-warning"></i>Run Match
               </a>
-              <form method="POST" action="{{ url_for('job.delete_jd', jd_id=jd.jd_id) }}"
-                    onsubmit="return confirm('Delete this job description?')">
+              <!-- uda do JD ko form -->
+              <form method="POST" action="{{ url_for('job.delete_jd', jd_id=jd.jd_id) }}" onsubmit="return confirm('Pakka ye JD delete karna hai bhai?')">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <button class="btn btn-outline-danger btn-sm">
-                  <i class="fas fa-trash me-1"></i>Delete
+                <button class="btn btn-light rounded-pill border text-danger fw-bold hover-lift px-3">
+                  <i class="fas fa-trash"></i>
                 </button>
               </form>
             </div>
@@ -41,50 +58,79 @@
         </div>
       </div>
 
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm h-100">
-            <div class="card-body p-4">
-              <h6 class="fw-semibold mb-3">Details</h6>
-              <div class="mb-2">
-                <span class="text-muted small d-block">Experience Required</span>
-                <span class="fw-medium">{{ jd.experience_req or "Not specified" }}</span>
+      <div class="row g-4 mb-4">
+        <!-- short details stats card -->
+        <div class="col-md-5 col-lg-4">
+          <div class="card border-0 shadow-sm h-100 rounded-4 bg-white">
+            <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+              <h6 class="fw-bold mb-0 text-dark">Job Details Snap</h6>
+            </div>
+            <div class="card-body p-4 d-flex flex-column gap-4">
+              
+              <!-- exp manga kya? -->
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                  <i class="fas fa-history"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Exp Req</div>
+                  <div class="fw-bolder text-dark fs-5">
+                     {{ jd.experience_req or "Not specified" }}
+                  </div>
+                </div>
               </div>
-              <div>
-                <span class="text-muted small d-block">Required Skills</span>
-                <span class="fw-medium">{{ jd.skills_list()|length }} skills</span>
+
+              <!-- total words in skill -->
+              <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top border-light">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                  <i class="fas fa-tools text-dark"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Skills Found</div>
+                  <div class="fw-bolder text-dark fs-4" style="line-height: 1;">{{ jd.skills_list()|length }}</div>
+                </div>
               </div>
+
             </div>
           </div>
         </div>
 
-        <div class="col-md-8">
-          <div class="card border-0 shadow-sm h-100">
+        <!-- tags k liye badi grid -->
+        <div class="col-md-7 col-lg-8">
+          <div class="card border-0 shadow-sm h-100 rounded-4 bg-white">
+            <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+              <h6 class="fw-bold mb-0 text-dark">Extracted Core Skills</h6>
+            </div>
             <div class="card-body p-4">
-              <h6 class="fw-semibold mb-3">Required Skills</h6>
               {% if jd.skills_list() %}
                 <div class="d-flex flex-wrap gap-2">
                   {% for skill in jd.skills_list() %}
-                    <span class="badge bg-success bg-opacity-10 text-success fw-normal px-3 py-2 rounded-pill">
-                      {{ skill }}
+                    <span class="badge bg-light text-success border border-success border-opacity-25 fw-semibold px-3 py-2 rounded-pill fs-6 hover-lift">
+                      <i class="fas fa-check text-dark me-1 opacity-75 mt-1" style="font-size: 0.8rem;"></i> {{ skill }}
                     </span>
                   {% endfor %}
                 </div>
               {% else %}
-                <p class="text-muted small mb-0">No skills extracted.</p>
+                <div class="text-center py-4">
+                  <i class="fas fa-code-pull-request fa-2x text-muted opacity-25 mb-3"></i>
+                  <h6 class="fw-bold text-muted">No specific skills detected</h6>
+                  <p class="small text-muted mb-0">System couldn't parse proper skills from the JD text.</p>
+                </div>
               {% endif %}
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="col-12">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0">
-              <h6 class="fw-semibold mb-0">Job Description Text</h6>
-            </div>
-            <div class="card-body px-4 pb-4">
-              <pre class="bg-body-secondary p-3 rounded-3 small text-wrap" style="max-height:300px;overflow-y:auto;">{{ jd.raw_text }}</pre>
-            </div>
+      <!-- original copy pest list -->
+      <div class="card border-0 shadow-sm rounded-4 bg-white">
+        <div class="card-header bg-white border-bottom pt-4 px-4 pb-3 py-3">
+          <h6 class="fw-bold mb-0 text-dark"><i class="fas fa-file-alt text-muted me-2"></i>Raw Job Description Text</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="bg-light p-4 rounded-bottom-4" style="max-height: 400px; overflow-y: auto;">
+            <!-- formatting mast rkhne ke lie font mono -->
+            <pre class="font-monospace text-dark small m-0 text-wrap" style="line-height: 1.6;">{{ jd.raw_text }}</pre>
           </div>
         </div>
       </div>

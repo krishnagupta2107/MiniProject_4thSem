@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- page ka title set karne ke liye -->
   <title>{% block title %}HireMatch{% endblock %}</title>
 
+  <!-- yaha se sab css libraries import ki gayi hai bhai -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <!-- apna naya modern thoda premium wala font yaha se load hoga -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet"/>
 
-    <script type="module">
+  <!-- firebase analytics ke liye jo server pr dalna zaruri hai -->
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
     const firebaseConfig = {
@@ -22,6 +26,7 @@
       appId: "{{ config.FIREBASE_APP_ID }}",
       measurementId: "{{ config.FIREBASE_MEASUREMENT_ID }}"
     };
+    /* firebase start kar raha hai */
     console.log("Firebase Init Config:", { ...firebaseConfig, apiKey: firebaseConfig.apiKey ? "***" + firebaseConfig.apiKey.slice(-4) : "MISSING!" });
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
@@ -31,88 +36,92 @@
 </head>
 <body>
 
-<!-- upar ka nav -->
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top" id="mainNav">
+<!-- upar ka navbar jisme link click karke idhar udhar ja sakte hain -->
+<nav class="navbar navbar-expand-lg sticky-top" id="mainNav">
   <div class="container">
     <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
-      <i class="fas fa-bullseye me-2 text-primary"></i>HireMatch
+      <i class="fas fa-layer-group text-primary"></i> HireMatch
     </a>
 
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse">
+    <!-- mobile view screen choti hui to button ayega -->
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navCollapse">
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+        <!-- check kar raha k user login hai ya nahi -->
         {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}"
+            <a class="nav-link {% if request.endpoint == 'main.dashboard' %}active text-primary fw-bold{% endif %}"
                href="{{ url_for('main.dashboard') }}">
-              <i class="fas fa-gauge-high me-1"></i>Dashboard
+              <i class="fas fa-chart-pie me-1"></i> Dashboard
             </a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle {% if request.endpoint in ['resume.upload_resume', 'resume.list_resumes', 'job.upload_jd', 'job.list_jobs'] %}active{% endif %}"
+            <a class="nav-link dropdown-toggle {% if request.endpoint in ['resume.upload_resume', 'resume.list_resumes', 'job.upload_jd', 'job.list_jobs'] %}active text-primary fw-bold{% endif %}"
                href="#" data-bs-toggle="dropdown">
-              <i class="fas fa-folder-open me-1"></i>Library
+              <i class="fas fa-folder-open me-1"></i> Library
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark">
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2">
               <li>
-                <a class="dropdown-item" href="{{ url_for('resume.upload_resume') }}">
-                  <i class="fas fa-file-arrow-up me-2"></i>Upload Resume
+                <a class="dropdown-item py-2" href="{{ url_for('resume.upload_resume') }}">
+                  <i class="fas fa-file-arrow-up me-2 text-primary"></i> Upload Resume
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{{ url_for('resume.list_resumes') }}">
-                  <i class="fas fa-file-lines me-2"></i>My Resumes
+                <a class="dropdown-item py-2" href="{{ url_for('resume.list_resumes') }}">
+                  <i class="fas fa-file-lines me-2 text-secondary"></i> My Resumes
                 </a>
               </li>
-              <li><hr class="dropdown-divider"></li>
+              <li><hr class="dropdown-divider opacity-25"></li>
               <li>
-                <a class="dropdown-item" href="{{ url_for('job.upload_jd') }}">
-                  <i class="fas fa-briefcase me-2"></i>Add Job
+                <a class="dropdown-item py-2" href="{{ url_for('job.upload_jd') }}">
+                  <i class="fas fa-briefcase me-2 text-success"></i> Add Job
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{{ url_for('job.list_jobs') }}">
-                  <i class="fas fa-list me-2"></i>My Jobs
+                <a class="dropdown-item py-2" href="{{ url_for('job.list_jobs') }}">
+                  <i class="fas fa-list me-2 text-warning"></i> My Jobs
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if 'match' in request.endpoint %}active{% endif %}"
+            <a class="nav-link {% if 'match' in request.endpoint %}active text-primary fw-bold{% endif %}"
                href="{{ url_for('match.run_match') }}">
-              <i class="fas fa-bolt me-1"></i>Match
+              <i class="fas fa-bolt me-1 text-warning"></i> Match
             </a>
           </li>
+          <!-- admin wale access k links -->
           {% if current_user.is_admin() %}
           <li class="nav-item">
-            <a class="nav-link {% if request.endpoint == 'admin.admin_dashboard' %}active{% endif %}"
+            <a class="nav-link {% if request.endpoint == 'admin.admin_dashboard' %}active text-primary fw-bold{% endif %}"
                href="{{ url_for('admin.admin_dashboard') }}">
-              <i class="fas fa-shield-halved me-1"></i>Admin
+              <i class="fas fa-shield-halved me-1 text-danger"></i> Admin
             </a>
           </li>
           {% endif %}
-          <li class="nav-item ms-lg-2">
-            <a class="btn btn-outline-light btn-sm px-3" href="{{ url_for('auth.logout') }}">
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a class="btn btn-outline-danger btn-sm px-4 py-2 rounded-pill fw-bold w-100" href="{{ url_for('auth.logout') }}">
               Logout
             </a>
           </li>
         {% else %}
+          <!-- bina login wale users ko ye dikhega -->
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
           </li>
           
           {% if request.endpoint != 'auth.login' %}
           <li class="nav-item">
-            <a class="nav-link btn btn-link text-decoration-none text-white opacity-75 fw-medium" href="{{ url_for('auth.login') }}">Login</a>
+            <a class="nav-link fw-bold" href="{{ url_for('auth.login') }}">Login</a>
           </li>
           {% endif %}
           
           {% if request.endpoint != 'auth.register' %}
-          <li class="nav-item ms-lg-2">
-            <a class="btn btn-primary btn-sm px-4 py-2 rounded-pill shadow-sm" href="{{ url_for('auth.register') }}">
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a class="btn btn-primary btn-sm px-4 py-2 rounded-pill shadow-sm fw-bold w-100" href="{{ url_for('auth.register') }}">
               Get Started
             </a>
           </li>
@@ -123,44 +132,54 @@
   </div>
 </nav>
 
-<!-- error dikhane ke liye toast -->
+<!-- error ya success k messages (toasts) yaha par aayenge flash hoke -->
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    <div class="container mt-3">
-      {% for cat, msg in messages %}
-        <div class="alert alert-{{ cat }} alert-dismissible fade show shadow-sm rounded-3" role="alert">
-          <i class="fas fa-{% if cat=='success' %}check-circle{% elif cat=='danger' %}circle-xmark{% elif cat=='warning' %}triangle-exclamation{% else %}circle-info{% endif %} me-2"></i>
-          {{ msg }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="container mt-4 pt-2">
+      <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-7">
+          {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }} alert-dismissible fade show d-flex align-items-center mb-3" role="alert">
+              <i class="fas fa-{% if cat=='success' %}check-circle{% elif cat=='danger' %}circle-xmark{% elif cat=='warning' %}triangle-exclamation{% else %}info-circle{% endif %} fs-4 me-3"></i>
+              <div>{{ msg }}</div>
+              <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      </div>
     </div>
   {% endif %}
 {% endwith %}
 
-<!-- yaha sab content aayega -->
+<!-- bich ka main content area jaha page load hoga -->
 <main>
   {% block content %}{% endblock %}
 </main>
 
-<!-- neeche ka footer -->
-<footer class="footer mt-auto py-4">
+<!-- footer bhai last page k liye -->
+<footer class="footer pb-5 pt-5 text-center text-md-start">
   <div class="container">
-    <div class="row align-items-center text-center text-md-start">
-      <div class="col-md-4 mb-2 mb-md-0">
-        <span class="fw-semibold">HireMatch</span>
-        <div class="text-muted small">AI Resume–Job Matching System</div>
+    <div class="row align-items-center justify-content-between gap-3 gap-md-0">
+      <div class="col-md-4">
+        <span class="fw-semibold d-block mb-1 text-dark fs-5">
+          <i class="fas fa-layer-group text-primary me-2"></i>HireMatch
+        </span>
+        <div class="text-muted small">AI Resume & Job Matching Tool</div>
       </div>
-      <div class="col-md-4 text-center mb-2 mb-md-0 text-muted small">
-        Flask · Bootstrap · Python · SQLite
+      <div class="col-md-4 text-md-center text-muted small">
+        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+          Flask · Bootstrap 5 · AI/ML
+        </span>
       </div>
       <div class="col-md-4 text-md-end text-muted small">
-        Team 43 · Project 77 · 4th Sem Mini Project
+        <strong>Mini Project 4th Sem</strong><br>
+        Developed by Students
       </div>
     </div>
   </div>
 </footer>
 
+<!-- bootstrap k js files yaha se link ki gayi hai interactivity k liye -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% block scripts %}{% endblock %}

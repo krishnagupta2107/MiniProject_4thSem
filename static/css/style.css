@@ -1,40 +1,65 @@
-/* main style file */
+/* main style file bhaiyas ke liye */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
 :root {
-  --bs-body-font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  --primary-color: #6366f1;
-  --primary-hover: #4f46e5;
+  /* naye fonts aur colors idhar hain */
+  --bs-body-font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
   --secondary-color: #ec4899;
-  --bg-gradient: linear-gradient(135deg, #f8f9fb 0%, #eef2ff 100%);
-  --navbar-bg: rgba(15, 17, 23, 0.85);
-  --footer-bg: #0f1117;
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --soft-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  --hover-shadow: 0 15px 35px rgba(99, 102, 241, 0.15);
+  
+  /* background ke gradients wagera */
+  --bg-color: #f8fafc;
+  --navbar-bg: rgba(255, 255, 255, 0.85);
+  --footer-bg: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  
+  /* shadow effects ekdum mast wale */
+  --soft-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --glow-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
   --transition-speed: 0.3s;
 }
 
+/* body ka background aur text color set kar rahe */
 body {
   font-family: var(--bs-body-font-family);
-  background: var(--bg-gradient);
+  background: var(--bg-color);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  color: #334155;
+  color: #1e293b;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* background pattern ke liye mast effect */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 500px;
+  background: linear-gradient(180deg, rgba(79, 70, 229, 0.08) 0%, rgba(248, 250, 252, 0) 100%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 main {
   flex: 1;
 }
 
-/* fonts ke liye */
+/* saare headers bold aur thode dark */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   color: #0f172a;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 }
 
+/* text me gradient dalne ka class */
 .text-gradient {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
@@ -42,211 +67,262 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
-/* nav aur glass effect */
+/* navbar jiska design transparent jaisa hai */
 #mainNav {
   background-color: var(--navbar-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   padding: 1rem 0;
   transition: all var(--transition-speed);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
+/* logo ya text brand ka */
 #mainNav .navbar-brand {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
   letter-spacing: -0.5px;
-  color: #fff;
+  color: #0f172a;
   display: flex;
   align-items: center;
 }
 
 #mainNav .navbar-brand i {
-  background: linear-gradient(135deg, #a5b4fc, #818cf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary-color);
+  margin-right: 0.5rem;
 }
 
+/* navbar k links */
 #mainNav .nav-link {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: rgba(255,255,255,0.7);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #475569;
   transition: all var(--transition-speed);
   border-radius: 8px;
   padding: 0.5rem 1rem;
-  margin: 0 0.15rem;
+  margin: 0 0.2rem;
 }
 
+/* link hover karega to color change hoga */
 #mainNav .nav-link:hover,
 #mainNav .nav-link.active {
-  color: #fff;
-  background: rgba(255,255,255,0.1);
+  color: var(--primary-color);
+  background: rgba(79, 70, 229, 0.05);
   transform: translateY(-1px);
 }
 
-/* cards ka design */
+/* glassmorphism wale cards */
 .card {
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 20px;
   box-shadow: var(--soft-shadow);
   transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
+/* card pe hover effect */
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   box-shadow: var(--hover-shadow);
+  border-color: rgba(255,255,255,0.9);
 }
 
 .card-header {
-  background: rgba(255,255,255,0.5);
-  border-bottom: 1px solid var(--glass-border);
-  padding: 1.25rem 1.5rem;
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1.25rem 1.75rem;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
-/* buttons wagera */
+.card-body {
+  padding: 1.75rem;
+}
+
+/* primary button ka styling */
 .btn {
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 600;
-  padding: 0.6rem 1.5rem;
+  padding: 0.65rem 1.5rem;
   transition: all var(--transition-speed);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
   border: none;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  color: white;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
 }
 
 .btn-primary:hover {
   background: linear-gradient(135deg, var(--primary-hover), var(--primary-color));
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(79, 70, 229, 0.35);
+  color: white;
 }
 
+/* form fields ka design */
 .form-control, .form-select {
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  padding: 0.8rem 1.2rem;
+  background: #ffffff;
+  color: #0f172a;
   transition: all var(--transition-speed);
+  font-weight: 500;
 }
 
+/* focus pe outline color */
 .form-control:focus, .form-select:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-  background: #fff;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+  background: #ffffff;
 }
 
-/* pehla page hero */
+/* home page ka hero area */
 .hero-section {
   position: relative;
-  overflow: hidden;
-  padding: 5rem 0;
+  overflow: visible;
+  padding: 6rem 0;
   border-bottom: none;
+  text-align: center;
 }
+
 .hero-bg-shape {
   position: absolute;
-  top: -50%;
-  left: -20%;
-  width: 1000px;
-  height: 1000px;
-  background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, rgba(255,255,255,0) 70%);
+  top: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1200px;
+  height: 1200px;
+  background: radial-gradient(circle, rgba(79,70,229,0.08) 0%, rgba(255,255,255,0) 60%);
   z-index: 0;
   pointer-events: none;
 }
+
 .hero-content {
   position: relative;
   z-index: 1;
 }
 
-/* icons ka scene */
+/* dashboard pe jo gol gol icons hai */
 .stat-icon {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(99,102,241,0.2));
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(79, 70, 229, 0.05));
   color: var(--primary-color);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   transition: all var(--transition-speed);
 }
 .card:hover .stat-icon {
   transform: scale(1.1) rotate(5deg);
+  background: var(--primary-color);
+  color: white;
+  box-shadow: var(--glow-shadow);
 }
 
+/* badi feature wala icon */
 .feature-icon {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(236,72,153,0.1));
+  border-radius: 24px;
+  background: #ffffff;
   color: var(--primary-color);
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin: 0 auto 1.5rem;
-  transition: all var(--transition-speed);
+  box-shadow: var(--soft-shadow);
+  transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0,0,0,0.02);
 }
 .card:hover .feature-icon {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: #fff;
-  box-shadow: 0 10px 20px rgba(99,102,241,0.3);
+  box-shadow: var(--hover-shadow);
 }
 
-/* error messages */
+/* flash error messages dikhane k liye toast/alerts */
 .alert {
   border: none;
-  border-radius: 12px;
-  box-shadow: var(--soft-shadow);
-  backdrop-filter: blur(8px);
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  font-weight: 500;
+  padding: 1rem 1.25rem;
 }
+.alert-success { background: #dcfce7; color: #166534; }
+.alert-danger { background: #fee2e2; color: #991b1b; }
+.alert-warning { background: #fef3c7; color: #92400e; }
+.alert-info { background: #dbeafe; color: #1e40af; }
 
-/* end footer */
+/* sabse naku me footer */
 .footer {
   background-color: var(--footer-bg);
-  color: rgba(255,255,255,0.6);
-  font-size: 0.85rem;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  color: #64748b;
+  font-size: 0.9rem;
   padding: 3rem 0;
-  margin-top: 4rem;
+  margin-top: auto; /* taaki footer bottom me rahe hamesha */
   position: relative;
   z-index: 10;
 }
 
 .footer .fw-semibold {
-  color: #fff;
-  font-size: 1.1rem;
+  color: #0f172a;
+  font-size: 1.15rem;
   letter-spacing: -0.5px;
 }
 
-/* table style */
+/* lists tables ka naya look */
+.table {
+  color: #334155;
+}
 .table-hover tbody tr {
   transition: all var(--transition-speed);
 }
 .table-hover tbody tr:hover {
-  background-color: rgba(99, 102, 241, 0.05);
-  transform: scale(1.01);
+  background-color: rgba(79, 70, 229, 0.03);
+  transform: scale(1.002);
+}
+.table th {
+  font-weight: 600;
+  color: #475569;
+  border-bottom-width: 2px;
+  border-bottom-color: #e2e8f0;
+}
+.table td {
+  vertical-align: middle;
+  border-color: #f1f5f9;
 }
 
+/* score bar jo percentage dikhata hai */
 .progress {
   border-radius: 99px;
-  background-color: rgba(0,0,0,0.05);
-  height: 10px;
+  background-color: #f1f5f9;
+  height: 8px;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  overflow: hidden;
 }
 .progress-bar {
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
   border-radius: 99px;
+  transition: width 1s ease-in-out;
 }
+.progress-bar.bg-success { background: linear-gradient(90deg, #22c55e, #16a34a); }
+.progress-bar.bg-warning { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.progress-bar.bg-danger { background: linear-gradient(90deg, #ef4444, #dc2626); }
 
-/* login form */
+/* login wagera ka centered box */
 .auth-wrapper {
   display: flex;
   align-items: center;
@@ -256,24 +332,34 @@ h1, h2, h3, h4, h5, h6 {
 }
 .auth-card {
   width: 100%;
-  max-width: 450px;
-  padding: 2.5rem;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* chote mote tools */
+/* baaki helpers bhai */
+.hover-lift {
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--hover-shadow);
+}
+
+.badge {
+  font-weight: 600;
+  padding: 0.5em 0.8em;
+  border-radius: 8px;
+}
+
 .glass-panel {
   background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
-}
-
-.hover-lift {
-  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-.hover-lift:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--hover-shadow);
 }
 

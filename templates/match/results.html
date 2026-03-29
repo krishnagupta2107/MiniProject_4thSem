@@ -1,138 +1,188 @@
 {% extends "base.html" %}
+<!-- result wala page bhai boht zaruri hai -->
 {% block title %}Match Results – {{ jd.title }}{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-5 col-xl-10">
 
-  <!-- top ka header -->
-  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+  <!-- top wala main header area jo pichle page se araha -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 mb-5">
     <div>
-      <nav aria-label="breadcrumb" class="mb-2">
-        <ol class="breadcrumb mb-0">
-          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-          <li class="breadcrumb-item"><a href="{{ url_for('match.run_match') }}">Matching</a></li>
-          <li class="breadcrumb-item active">Results</li>
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0 px-3 py-2 bg-white rounded-pill shadow-sm d-inline-flex border">
+          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}" class="text-decoration-none fw-medium text-muted"><i class="fas fa-home me-1"></i> Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('match.run_match') }}" class="text-decoration-none fw-medium text-muted">Matching</a></li>
+          <li class="breadcrumb-item active fw-bold text-primary" aria-current="page">Results</li>
         </ol>
       </nav>
-      <h4 class="fw-bold mb-0">{{ jd.title }}</h4>
-      {% if jd.company %}<span class="text-muted">{{ jd.company }}</span>{% endif %}
+      <h2 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.02em;">Job: {{ jd.title }}</h2>
+      {% if jd.company %}<p class="text-muted fw-medium fs-6 mb-0"><i class="far fa-building me-1"></i>{{ jd.company }}</p>{% endif %}
     </div>
-    <div class="d-flex gap-3 align-items-center">
-      <span class="badge bg-white bg-opacity-75 text-primary border fs-6 fw-bold px-4 py-2 rounded-pill shadow-sm glass-panel">
-        <i class="fas fa-star text-warning me-1"></i> Avg score: {{ avg_score }}
-      </span>
-      <a href="{{ url_for('match.run_match') }}" class="btn btn-light border rounded-pill shadow-sm px-3 hover-lift fw-medium">
-        <i class="fas fa-refresh me-2 text-primary"></i>Re-run Match
+    <div class="d-flex flex-wrap gap-3 align-items-center bg-white p-3 rounded-4 shadow-sm border mt-2 mt-md-0">
+      <div class="d-flex align-items-center gap-3 border-end pe-3">
+        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+          <i class="fas fa-star text-warning"></i>
+        </div>
+        <div>
+          <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Avg Score</div>
+          <div class="fw-bolder text-dark fs-5" style="line-height:1;">{{ avg_score }}</div>
+        </div>
+      </div>
+      <!-- firse run karna hai kisi aur job pe to ye dabao -->
+      <a href="{{ url_for('match.run_match') }}" class="btn btn-light fw-bold text-primary rounded-pill hover-lift px-3 py-2 border">
+        <i class="fas fa-redo-alt me-2"></i>Re-run Match
       </a>
     </div>
   </div>
 
-  <!-- kitne select hue -->
+  <!-- upar ki stats wali patiya -->
   {% if matches %}
     {% set shortlisted = matches | selectattr('shortlist_label', 'equalto', 'Shortlisted') | list %}
     {% set maybe       = matches | selectattr('shortlist_label', 'equalto', 'Maybe')       | list %}
     {% set rejected    = matches | selectattr('shortlist_label', 'equalto', 'Rejected')    | list %}
 
     <div class="row g-3 mb-4">
+      <!-- top kitne pass hue-->
       <div class="col-4">
-        <div class="card glass-panel hover-lift text-center py-4">
-          <div class="fs-3 fw-bold text-success">{{ shortlisted|length }}</div>
-          <div class="text-muted small">Shortlisted</div>
+        <div class="card border-0 shadow-sm hover-lift text-center py-4 bg-white rounded-4 border-bottom border-success border-4">
+          <div class="fs-2 fw-bolder text-success mb-1" style="line-height: 1;">{{ shortlisted|length }}</div>
+          <div class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.05em;">Shortlisted</div>
         </div>
       </div>
+      <!-- beech wale score wale -->
       <div class="col-4">
-        <div class="card glass-panel hover-lift text-center py-4">
-          <div class="fs-3 fw-bold text-warning">{{ maybe|length }}</div>
-          <div class="text-muted small">Maybe</div>
+        <div class="card border-0 shadow-sm hover-lift text-center py-4 bg-white rounded-4 border-bottom border-warning border-4">
+          <div class="fs-2 fw-bolder text-warning mb-1" style="line-height: 1;">{{ maybe|length }}</div>
+          <div class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.05em;">Maybe</div>
         </div>
       </div>
+      <!-- bekar jisko faikna hai -->
       <div class="col-4">
-        <div class="card glass-panel hover-lift text-center py-4">
-          <div class="fs-3 fw-bold text-danger">{{ rejected|length }}</div>
-          <div class="text-muted small">Rejected</div>
+        <div class="card border-0 shadow-sm hover-lift text-center py-4 bg-white rounded-4 border-bottom border-danger border-4">
+          <div class="fs-2 fw-bolder text-danger mb-1" style="line-height: 1;">{{ rejected|length }}</div>
+          <div class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.05em;">Rejected</div>
         </div>
       </div>
     </div>
   {% endif %}
 
-  <!-- result wala table -->
+  <!-- main sabse bada wala results board list dikhana ka bhaijaan -->
   {% if matches %}
-    <div class="card glass-panel shadow-sm border-0">
+    <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+          <table class="table table-hover align-middle mb-0 border-0">
+            <thead class="bg-light text-muted small text-uppercase" style="letter-spacing: 0.05em;">
               <tr>
-                <th class="px-4 py-3">Candidate</th>
-                <th>Score</th>
-                <th>Label</th>
-                <th>Matched Skills</th>
-                <th>Missing Skills</th>
-                <th class="px-4">Actions</th>
+                <th class="ps-4 py-3 fw-bold border-bottom-0">Candidate Profile</th>
+                <th class="py-3 fw-bold border-bottom-0" style="min-width: 130px;">Match Score</th>
+                <th class="py-3 fw-bold border-bottom-0">AI Decision</th>
+                <th class="py-3 fw-bold border-bottom-0">Matched Skills</th>
+                <th class="py-3 fw-bold border-bottom-0">Missing Skills</th>
+                <th class="pe-4 py-3 fw-bold border-bottom-0 text-end">Report</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="border-top-0">
               {% for m in matches %}
-              <tr>
-                <td class="px-4">
-                  <div class="fw-medium">{{ m.resume.candidate_name or m.resume.filename }}</div>
-                  <div class="text-muted small">
-                    {% if m.resume.experience_years %}{{ m.resume.experience_years }}y exp ·{% endif %}
-                    {{ m.resume.education_level or '' }}
+              <tr class="p-list-hover border-bottom">
+                
+                <!-- candidate k details aayenge pehle column me -->
+                <td class="ps-4 py-3">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle shadow-sm" style="width: 40px; height: 40px;">
+                      <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold text-dark">{{ m.resume.candidate_name or m.resume.filename }}</div>
+                      <div class="text-muted small fw-medium mt-1">
+                        {% if m.resume.experience_years %}{{ m.resume.experience_years }}yrs exp <span class="mx-1 text-light-gray">|</span>{% endif %}
+                        {{ m.resume.education_level or 'Not specified' }}
+                      </div>
+                    </div>
                   </div>
                 </td>
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <div class="progress" style="width:70px;height:6px;">
-                      <div class="progress-bar
+
+                <!-- score dikhane ka progress bar -->
+                <td class="py-3">
+                  <div class="d-flex flex-column gap-1">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="fw-bolder fs-5 text-dark" style="line-height: 1;">{{ m.relevance_score }}<span class="fs-6 text-muted fw-medium">%</span></span>
+                    </div>
+                    <div class="progress bg-secondary bg-opacity-10 rounded-pill" style="height: 6px; box-shadow: none;">
+                      <div class="progress-bar rounded-pill
                         {% if m.relevance_score >= 70 %}bg-success
                         {% elif m.relevance_score >= 45 %}bg-warning
                         {% else %}bg-danger{% endif %}"
                         style="width:{{ m.relevance_score }}%"></div>
                     </div>
-                    <span class="fw-bold">{{ m.relevance_score }}</span>
                   </div>
                 </td>
-                <td>
-                  <span class="badge rounded-pill px-3
-                    {% if m.shortlist_label == 'Shortlisted' %}bg-success
-                    {% elif m.shortlist_label == 'Maybe' %}bg-warning text-dark
-                    {% else %}bg-danger{% endif %}">
-                    {{ m.shortlist_label }}
-                  </span>
-                  {% if m.feedback %}
-                    <div class="mt-2 text-muted" style="font-size: 0.85rem; max-width: 250px;">
-                      <i class="fas fa-lightbulb text-warning"></i> {{ m.feedback }}
-                    </div>
-                  {% endif %}
+
+                <!-- isko select krna hai ki nhi -->
+                <td class="py-3">
+                  <div class="d-flex flex-column align-items-start gap-2">
+                    <span class="badge border
+                      {% if m.shortlist_label == 'Shortlisted' %}bg-success bg-opacity-10 text-success border-success
+                      {% elif m.shortlist_label == 'Maybe' %}bg-warning bg-opacity-10 text-warning border-warning
+                      {% else %}bg-danger bg-opacity-10 text-danger border-danger{% endif %} px-3 py-1.5 rounded-pill fw-bold" style="font-size: 0.8rem;">
+                      <i class="fas fa-circle me-1" style="font-size: 6px; vertical-align: middle;"></i>{{ m.shortlist_label }}
+                    </span>
+                    
+                    {% if m.feedback %}
+                      <!-- popover for feedback so table chidiyaghar na bane -->
+                      <button type="button" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fw-medium small" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" title="AI Feedback" data-bs-content="{{ m.feedback }}">
+                        <i class="fas fa-lightbulb"></i> Read Tips
+                      </button>
+                    {% endif %}
+                  </div>
                 </td>
-                <td>
-                  {% for skill in m.matched_skills_list()[:3] %}
-                    <span class="badge bg-success bg-opacity-10 text-success me-1">{{ skill }}</span>
-                  {% endfor %}
-                  {% if m.matched_skills_list()|length > 3 %}
-                    <span class="text-muted small">+{{ m.matched_skills_list()|length - 3 }}</span>
-                  {% endif %}
+
+                <!-- skills jo match kar rhe h -->
+                <td class="py-3">
+                  <div class="d-flex flex-wrap gap-1">
+                    {% for skill in m.matched_skills_list()[:3] %}
+                      <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-medium">{{ skill }}</span>
+                    {% endfor %}
+                    {% if m.matched_skills_list()|length > 3 %}
+                      <span class="badge bg-light text-muted border fw-medium">+{{ m.matched_skills_list()|length - 3 }}</span>
+                    {% endif %}
+                    {% if not m.matched_skills_list() %}
+                       <span class="text-muted small">None</span>
+                    {% endif %}
+                  </div>
                 </td>
-                <td>
-                  {% for skill in m.missing_skills_list()[:3] %}
-                    <span class="badge bg-danger bg-opacity-10 text-danger me-1">{{ skill }}</span>
-                  {% endfor %}
-                  {% if m.missing_skills_list()|length > 3 %}
-                    <span class="text-muted small">+{{ m.missing_skills_list()|length - 3 }}</span>
-                  {% endif %}
+
+                <!-- jo skills usme present nai hai -->
+                <td class="py-3">
+                  <div class="d-flex flex-wrap gap-1">
+                    {% for skill in m.missing_skills_list()[:3] %}
+                      <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 fw-medium">{{ skill }}</span>
+                    {% endfor %}
+                    {% if m.missing_skills_list()|length > 3 %}
+                      <span class="badge bg-light text-muted border fw-medium">+{{ m.missing_skills_list()|length - 3 }}</span>
+                    {% endif %}
+                    {% if not m.missing_skills_list() %}
+                       <span class="text-muted small">None</span>
+                    {% endif %}
+                  </div>
                 </td>
-                <td class="px-4">
-                  <button class="btn btn-sm btn-outline-primary"
-                          data-bs-toggle="modal" 
-                          data-bs-target="#chartModal{{ m.match_id }}"
-                          onclick='renderRadar("{{ m.match_id }}", {{ jd.skills_list() | tojson }}, {{ m.matched_skills_list() | tojson }})'>
-                    <i class="fas fa-chart-pie me-1"></i>Chart
-                  </button>
-                  <button class="btn btn-sm btn-outline-danger ms-1"
-                          onclick="exportPDF('{{ m.match_id }}')">
-                    <i class="fas fa-file-pdf"></i>
-                  </button>
+
+                <!-- akhari buttons result share wgr k liye -->
+                <td class="pe-4 py-3 text-end">
+                  <div class="d-flex justify-content-end gap-1">
+                    <button class="btn btn-sm btn-white border text-primary rounded bg-white shadow-sm"
+                            title="View Radar Chart"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#chartModal{{ m.match_id }}"
+                            onclick='renderRadar("{{ m.match_id }}", {{ jd.skills_list() | tojson }}, {{ m.matched_skills_list() | tojson }})'>
+                      <i class="fas fa-chart-pie px-1"></i>
+                    </button>
+                    <button class="btn btn-sm btn-white border text-danger rounded bg-white shadow-sm"
+                            title="Download PDF"
+                            onclick="exportPDF('{{ m.match_id }}')">
+                      <i class="fas fa-file-pdf px-1"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -142,60 +192,147 @@
       </div>
     </div>
 
-    <!-- modal bahar rakho warna table tod dega -->
+    <!-- modalf window hide karke rakhne padte -->
     {% for m in matches %}
-    <!-- chart ka popup -->
+    <!-- ye popup form report card dikhane k liye hai jab aap chart btn dabate hoo -->
     <div class="modal fade" id="chartModal{{ m.match_id }}" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content" id="exportTarget{{ m.match_id }}">
-          <div class="modal-header border-0 pb-0">
-            <h5 class="modal-title fw-bold">Candidate Analysis Report</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-dialog modal-lg border-0">
+        <div class="modal-content shadow rounded-4 border-0" id="exportTarget{{ m.match_id }}">
+          
+          <div class="modal-header border-bottom px-4 pt-4 pb-3">
+            <h5 class="modal-title fw-bolder text-dark"><i class="fas fa-id-card-clip text-primary me-2"></i>Candidate Match Report</h5>
+            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            <h6>Candidate: <span class="text-primary">{{ m.resume.candidate_name or m.resume.filename }}</span></h6>
-            <h6>Job: <span class="text-primary">{{ jd.title }}</span></h6>
-            <hr>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <p><strong>Score:</strong> {{ m.relevance_score }}/100 ({{ m.shortlist_label }})</p>
-                    <p><strong>Matched Skills:</strong> {{ m.matched_skills_list() | join(', ') }}</p>
-                    <p><strong>Missing Skills:</strong> {{ m.missing_skills_list() | join(', ') }}</p>
-                    {% if m.feedback %}
-                      <div class="alert alert-warning py-2 small">
-                        <strong>💡 Feedback:</strong> {{ m.feedback }}
-                      </div>
-                    {% endif %}
-                    {% if m.resume.candidate_email %}<p><strong>Email:</strong> {{ m.resume.candidate_email }}</p>{% endif %}
-                    {% if m.resume.candidate_phone %}<p><strong>Phone:</strong> {{ m.resume.candidate_phone }}</p>{% endif %}
-                </div>
+          
+          <div class="modal-body px-4 py-4 bg-light bg-opacity-50">
+            <!-- card detail header -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 bg-white p-3 rounded-4 shadow-sm border border-black border-opacity-10">
+              <div>
+                <p class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 0.05em;">Applicant</p>
+                <h6 class="fw-bold fs-5 text-dark mb-0">{{ m.resume.candidate_name or m.resume.filename }}</h6>
+              </div>
+              <div class="text-end">
+                <p class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 0.05em;">Applying For</p>
+                <h6 class="fw-bold fs-5 text-dark mb-0">{{ jd.title }}</h6>
+              </div>
+            </div>
+
+            <div class="row g-4 align-items-center">
+                
+                <!-- info side left me -->
                 <div class="col-md-6">
-                    <canvas id="radarChart{{ m.match_id }}" width="300" height="300"></canvas>
+                    <div class="bg-white p-4 rounded-4 shadow-sm border border-black border-opacity-10 h-100">
+                      <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-3">
+                        <span class="fw-bold text-dark fs-5">Score Setup</span>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="fs-4 fw-bolder text-dark">{{ m.relevance_score }}%</span>
+                          <span class="badge border
+                          {% if m.shortlist_label == 'Shortlisted' %}bg-success bg-opacity-10 text-success border-success
+                          {% elif m.shortlist_label == 'Maybe' %}bg-warning bg-opacity-10 text-warning border-warning
+                          {% else %}bg-danger bg-opacity-10 text-danger border-danger{% endif %} px-2 py-1 rounded-pill fw-bold">
+                          {{ m.shortlist_label }}
+                         </span>
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <p class="fw-bold text-dark small mb-2"><i class="fas fa-check-circle text-success me-1"></i> Skills Included</p>
+                        <div class="d-flex flex-wrap gap-1">
+                          {% for s in m.matched_skills_list() %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 fw-medium">{{ s }}</span>
+                          {% else %}
+                            <span class="small text-muted font-italic">No matched skills recorded.</span>
+                          {% endfor %}
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <p class="fw-bold text-dark small mb-2"><i class="fas fa-times-circle text-danger me-1"></i> Skills Excluded</p>
+                        <div class="d-flex flex-wrap gap-1">
+                          {% for s in m.missing_skills_list() %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 fw-medium">{{ s }}</span>
+                          {% else %}
+                             <span class="small text-muted font-italic">Perfect Match on all parsed skills!</span>
+                          {% endfor %}
+                        </div>
+                      </div>
+
+                      <!-- feedback note from AI -->
+                      {% if m.feedback %}
+                        <div class="alert alert-warning py-3 small mt-3 border-warning border-opacity-50">
+                          <strong class="d-block mb-1 text-dark"><i class="fas fa-lightbulb text-warning me-1"></i> Evaluation AI:</strong> 
+                          <span class="text-dark opacity-100">{{ m.feedback }}</span>
+                        </div>
+                      {% endif %}
+
+                      <!-- detail wale emails phone -->
+                      {% if m.resume.candidate_email or m.resume.candidate_phone %}
+                        <div class="mt-3 pt-3 border-top">
+                           {% if m.resume.candidate_email %}<div class="text-muted small fw-medium mb-1"><i class="fas fa-envelope me-2 w-15px"></i>{{ m.resume.candidate_email }}</div>{% endif %}
+                           {% if m.resume.candidate_phone %}<div class="text-muted small fw-medium"><i class="fas fa-phone me-2 w-15px"></i>{{ m.resume.candidate_phone }}</div>{% endif %}
+                        </div>
+                      {% endif %}
+
+                    </div>
                 </div>
+
+                <!-- graph area right me -->
+                <div class="col-md-6">
+                    <div class="bg-white p-4 rounded-4 shadow-sm border border-black border-opacity-10 h-100 d-flex flex-column align-items-center justify-content-center" style="min-height: 350px;">
+                      <h6 class="fw-bold text-muted small text-uppercase mb-4 mt-2 text-center" style="letter-spacing: 0.05em;">Skill Distribution Radar</h6>
+                      <!-- yaha apna graph fill hoga by JS -->
+                      <canvas id="radarChart{{ m.match_id }}" style="max-height: 280px; width: 100%;"></canvas>
+                    </div>
+                </div>
+
             </div>
           </div>
         </div>
       </div>
     </div>
     {% endfor %}
+
   {% else %}
-    <div class="card glass-panel shadow-sm">
-      <div class="card-body text-center py-5 text-muted">
-        <i class="fas fa-circle-question fa-3x mb-3 opacity-50 d-block text-primary"></i>
-        No results yet. Upload some resumes first then re-run matching.
+    <!-- zero bta zero result hua to warning msg do error wgr -->
+    <div class="card border-0 shadow-sm rounded-4 bg-white mt-4">
+      <div class="card-body py-5 text-center px-4">
+        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4 shadow-sm border border-light" style="width: 100px; height: 100px;">
+          <i class="fas fa-face-frown fa-3x text-muted opacity-50"></i>
+        </div>
+        <h4 class="fw-bolder text-dark">No matches ran yet</h4>
+        <p class="text-muted fw-medium mb-4 mx-auto" style="max-width: 500px;">Abhi koi bhi matching score nai mila. Yaa toh tumne resume nahi daale hai, ya job select theek se nai hua. Ek bar wapas shuru karte hai.</p>
+        <a href="{{ url_for('match.run_match') }}" class="btn btn-primary shadow-sm rounded-pill fw-bold px-4 hover-lift py-2">
+           Go Back to Matching Tool
+        </a>
       </div>
     </div>
   {% endif %}
 
 </div>
+
+<!-- ek choti si custom script for popovers -->
+<style>
+.p-list-hover { transition: all 0.2s; }
+.p-list-hover:hover { background-color: #f8fafc; }
+.w-15px { width: 15px; text-align: center; }
+</style>
 {% endblock %}
 
 {% block scripts %}
+<!-- load karli chart library aur pdflib html to pdf convert krne -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
-// Keep track of charts so we can destroy them to prevent overlaps when re-opening modals
+// bootstrap popover k lie 
+document.addEventListener("DOMContentLoaded", function() {
+  const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+  const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl, { sanitize: false })
+  })
+});
+
+// memory manage krke objects delete krna wrna hang hoga browser
 const memoryCharts = {};
 
 function renderRadar(matchId, jdSkills, matchedSkills) {
@@ -203,8 +340,9 @@ function renderRadar(matchId, jdSkills, matchedSkills) {
         memoryCharts[matchId].destroy();
     }
     
-    // Pick the top 8 requirements to avoid overcrowding the radar graph
+    // saare labels nhi sirf upar k 8 skills dalo diagram me wrna makdi ka jala lgega
     const labels = jdSkills.slice(0, 8);
+    // filter maar dia idhar ki konse present aur pass array to chart
     const candidateData = labels.map(s => matchedSkills.includes(s) ? 1 : 0);
     const jobData = labels.map(() => 1);
     
@@ -215,31 +353,44 @@ function renderRadar(matchId, jdSkills, matchedSkills) {
             labels: labels,
             datasets: [
                 {
-                    label: 'Candidate Skills',
+                    label: 'Applicant Score',
                     data: candidateData,
-                    backgroundColor: 'rgba(25, 135, 84, 0.2)',
-                    borderColor: 'rgba(25, 135, 84, 1)',
+                    backgroundColor: 'rgba(79, 70, 229, 0.15)', // modern primary rgb
+                    borderColor: 'rgba(79, 70, 229, 1)',
                     borderWidth: 2,
-                    pointBackgroundColor: 'rgba(25, 135, 84, 1)'
+                    pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(79, 70, 229, 1)'
                 },
                 {
-                    label: 'Required',
+                    label: 'Required Req',
                     data: jobData,
-                    backgroundColor: 'rgba(220, 53, 69, 0.05)',
-                    borderColor: 'rgba(220, 53, 69, 0.3)',
+                    backgroundColor: 'rgba(236, 72, 153, 0.05)', // modern secondary
+                    borderColor: 'rgba(236, 72, 153, 0.3)',
                     borderDash: [5, 5],
-                    borderWidth: 1
+                    borderWidth: 1.5,
+                    pointBackgroundColor: 'transparent',
+                    pointBorderColor: 'transparent',
                 }
             ]
         },
         options: {
             scales: {
                 r: {
-                    angleLines: { display: false },
+                    angleLines: { color: 'rgba(0,0,0,0.05)' },
+                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    pointLabels: {
+                        font: { family: "'Plus Jakarta Sans', sans-serif", size: 10, weight: '600' },
+                        color: '#64748b'
+                    },
                     suggestedMin: 0,
                     suggestedMax: 1,
                     ticks: { display: false }
                 }
+            },
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '500' } } }
             }
         }
     });
@@ -248,21 +399,21 @@ function renderRadar(matchId, jdSkills, matchedSkills) {
 function exportPDF(matchId) {
     const element = document.getElementById('exportTarget' + matchId);
     
-    // Temporarily remove standard modal classes that ruin rendering layouts for the PDF clone
-    element.classList.remove('modal-content');
-    element.style.padding = '20px';
+    // thodi format set kr do b4 print bhai CSS break nhi krni isliye
+    element.classList.remove('shadow', 'rounded-4');
+    element.style.padding = '30px';
     
     const opt = {
-      margin:       1,
-      filename:     'HireMatch_Report_' + matchId + '.pdf',
+      margin:       0.5,
+      filename:     'RecruitMatch_Report_' + matchId + '.pdf',
       image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
+      html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
     
+    // save kra ke file wapas apni aukat pe leao sab reset!
     html2pdf().set(opt).from(element).save().then(() => {
-        // Restore classes
-        element.classList.add('modal-content');
+        element.classList.add('shadow', 'rounded-4');
         element.style.padding = '';
     });
 }

@@ -1,68 +1,86 @@
 {% extends "base.html" %}
+<!-- entry point gate -->
 {% block title %}Login – HireMatch{% endblock %}
 
 {% block content %}
-<div class="auth-wrapper">
-  <div class="card auth-card glass-panel shadow-lg">
-    <div class="text-center mb-4">
-      <h3 class="fw-bold mb-2">Welcome Back</h3>
-      <p class="text-muted">Log in to your HireMatch account</p>
-    </div>
-
-    <button type="button" class="btn btn-light border w-100 py-2 mb-3 fw-semibold d-flex align-items-center justify-content-center hover-lift" id="googleAuthBtn">
-        <i class="fab fa-google text-danger me-2"></i> Continue with Google
-    </button>
+<div class="auth-wrapper d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 180px); padding: 2rem 0;">
+  <!-- glass wala thicc box jisme form rakha h -->
+  <div class="card auth-card border-0 shadow-lg bg-white rounded-4 overflow-hidden" style="width: 100%; max-width: 440px;">
     
-    <div class="d-flex align-items-center mb-4">
-       <hr class="flex-grow-1 opacity-25">
-       <span class="px-3 text-muted small fw-medium">OR EMAIL</span>
-       <hr class="flex-grow-1 opacity-25">
-    </div>
-
-    <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-
-      <div class="mb-3">
-        <label class="form-label fw-bold small text-muted text-uppercase">Email Address</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
-          <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="you@example.com"
-                 value="{{ request.form.get('email', '') }}" required/>
+    <div class="bg-primary" style="height: 5px; width: 100%;"></div>
+    
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <div class="d-inline-flex justify-content-center align-items-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 60px; height: 60px;">
+           <i class="fas fa-layer-group fs-3"></i>
         </div>
+        <h3 class="fw-bolder mb-2 text-dark" style="letter-spacing: -0.02em;">Welcome Back</h3>
+        <p class="text-muted fw-medium fs-6 mb-0">Log in to track applications</p>
       </div>
 
-      <div class="mb-4">
-        <div class="d-flex justify-content-between">
-          <label class="form-label fw-bold small text-muted text-uppercase">Password</label>
-        </div>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-lock"></i></span>
-          <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="••••••••" required/>
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow">
-        Log In <i class="fas fa-arrow-right ms-2"></i>
+      <!-- firebase google button joki backend linked h script wgr se -->
+      <button type="button" class="btn btn-white border w-100 py-2 mb-4 fw-bold text-dark d-flex align-items-center justify-content-center hover-lift shadow-sm rounded-pill bg-white" id="googleAuthBtn">
+          <i class="fab fa-google text-danger me-2 fs-5"></i> Continue with Google
       </button>
-    </form>
+      
+      <!-- email aur o-auth ka divider chota sa -->
+      <div class="d-flex align-items-center mb-4">
+         <hr class="flex-grow-1 border-secondary m-0">
+         <span class="px-3 text-muted small fw-bold text-uppercase" style="letter-spacing: 0.1em; font-size: 0.75rem;">OR EMAIL</span>
+         <hr class="flex-grow-1 border-secondary m-0">
+      </div>
 
-    <div class="mt-4 text-center">
-      <p class="text-muted small mb-0">
-        Don't have an account?
-        <a href="{{ url_for('auth.register') }}" class="fw-bold text-primary text-decoration-none">Create one</a>
-      </p>
+      <!-- normal username pass ka form -->
+      <form method="POST" action="{{ url_for('auth.login') }}" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark mb-1">Email Address</label>
+          <div class="position-relative">
+             <i class="fas fa-envelope position-absolute top-50 translate-middle-y text-muted opacity-50 ms-3"></i>
+             <input type="email" name="email" class="form-control bg-light border-0 ps-5 py-2 rounded-3 text-dark fw-medium" placeholder="mail@example.com"
+                    value="{{ request.form.get('email', '') }}" required/>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="form-label fw-bold text-dark mb-0">Password</label>
+            <!-- pass bhulne par password reset link bhai! abhi ye empty route ho sakta h pr rakh lo -->
+          </div>
+          <div class="position-relative">
+             <i class="fas fa-lock position-absolute top-50 translate-middle-y text-muted opacity-50 ms-3"></i>
+             <input type="password" name="password" class="form-control bg-light border-0 ps-5 py-2 rounded-3 text-dark fw-medium" placeholder="••••••••" required/>
+          </div>
+        </div>
+
+        <!-- jhatke wala primary login button -->
+        <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm hover-lift fw-bold fs-6 mb-4">
+          Log Into Account <i class="fas fa-arrow-right ms-2 fs-7"></i>
+        </button>
+      </form>
+
+      <div class="text-center">
+        <p class="text-muted fw-medium mb-0">
+          New here?
+          <a href="{{ url_for('auth.register') }}" class="fw-bold text-primary text-decoration-none border-bottom border-primary ms-1">Create an account</a>
+        </p>
+      </div>
+      
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<!-- auth flow run window pe chlega -->
 <script type="module">
   import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   
   const googleBtn = document.getElementById("googleAuthBtn");
   if (googleBtn) {
       googleBtn.addEventListener("click", async () => {
+          // main fire script pass idhr hogi token lekr server k liye
           const auth = getAuth(window.firebaseApp);
           const provider = new GoogleAuthProvider();
           
@@ -81,15 +99,17 @@
               
               const data = await res.json();
               if (data.success) {
+                  // match kr gya mast me redirect krdo dashboard!
                   window.location.href = data.redirect;
               } else {
-                  alert("Google Sign-In backend verification failed: " + data.error);
+                  // backnd me error h to dikhao
+                  alert("Google Auth m kuch gadbad hai bhaijaan: " + data.error);
               }
           } catch (error) {
               console.error(error);
-              // don't alert if they just closed the popup
+              // agar bas dialog band kia to chill karo
               if (error.code !== "auth/popup-closed-by-user") {
-                  alert("Error during Google sign-in: " + error.message);
+                  alert("Login fail mardiya Google ne: " + error.message);
               }
           }
       });

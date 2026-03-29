@@ -1,35 +1,53 @@
 {% extends "base.html" %}
+<!-- ye upar tab me jo title dikhta hai wo hai -->
 {% block title %}HireMatch – AI Resume Matching{% endblock %}
 
 {% block content %}
-<!-- hero section bhai -->
-<section class="hero-section text-center">
+<!-- home page ka main hero section yaha shuru hota hai bhai -->
+<section class="hero-section">
+  <!-- ye background me jo badhiya sa gradient hai uske liye -->
   <div class="hero-bg-shape"></div>
-  <div class="container hero-content py-5">
+  <div class="container hero-content">
     <div class="row justify-content-center">
-      <div class="col-lg-8 py-5">
-        <div class="d-inline-block badge bg-white bg-opacity-75 border text-primary fw-semibold mb-4 px-4 py-2 rounded-pill shadow-sm glass-panel">
-          <i class="fas fa-graduation-cap me-2 text-primary"></i> 4th Semester Mini Project · AI/ML
+      <div class="col-lg-9 col-xl-8">
+        <!-- chota sa tag jo upar chamakta hai -->
+        <div class="d-inline-flex align-items-center bg-white border border-primary border-opacity-25 text-primary fw-bold mb-4 px-4 py-2 rounded-pill shadow-sm hover-lift" style="font-size: 0.9rem;">
+          <span class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-circle me-2" style="width: 24px; height: 24px;">
+            <i class="fas fa-bolt fa-xs"></i>
+          </span>
+          AI-Powered 4th Sem Mini Project
         </div>
-        <h1 class="display-3 fw-bold mb-4">
+        
+        <!-- main bada text -->
+        <h1 class="display-3 fw-bolder mb-4" style="letter-spacing: -0.04em; line-height: 1.1;">
           Match Resumes to Jobs <br>
-          <span class="text-gradient">with AI Power</span>
+          <span class="text-gradient position-relative">
+            with Superhuman AI
+            <!-- text ke niche ek underline jaisa effect -->
+            <svg class="position-absolute start-0 bottom-0 w-100" style="height: 12px; margin-bottom: -4px; z-index: -1;" viewBox="0 0 100 20" preserveAspectRatio="none">
+              <path d="M0 10 Q50 20 100 10" fill="none" stroke="rgba(236, 72, 153, 0.3)" stroke-width="8" stroke-linecap="round"/>
+            </svg>
+          </span>
         </h1>
-        <p class="lead text-secondary mb-5 px-md-5">
-          Upload resumes and job descriptions. Our NLP-based system extracts skills,
-          scores candidates, and ranks them automatically — no manual screening needed.
+        
+        <!-- thoda description -->
+        <p class="lead text-secondary mb-5 px-md-5" style="font-size: 1.2rem; font-weight: 500;">
+          Upload resumes and job descriptions. Our NLP-based system automatically extracts skills,
+          scores candidates, and ranks them — saving hours of manual screening.
         </p>
+        
+        <!-- do mast button -->
         <div class="d-flex justify-content-center gap-3 flex-wrap">
           {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary shadow-lg btn-lg px-5 py-3 rounded-pill fw-bold">
-              <i class="fas fa-gauge-high me-2"></i> Go to Dashboard
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 shadow-lg fs-5">
+              <i class="fas fa-chart-pie me-2"></i> Open Dashboard
             </a>
           {% else %}
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary shadow-lg btn-lg px-5 py-3 rounded-pill fw-bold">
-              <i class="fas fa-rocket me-2"></i> Get Started Free
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-5 py-3 shadow-lg fs-6">
+              Get Started for Free <i class="fas fa-arrow-right ms-2 fs-7 align-middle"></i>
             </a>
-            <a href="{{ url_for('auth.login') }}" class="btn btn-light shadow-sm btn-lg px-5 py-3 rounded-pill fw-bold">
-              Login
+            <a href="{{ url_for('auth.login') }}" class="btn btn-light btn-lg px-5 py-3 border shadow-sm fs-6 text-dark hover-lift">
+              Login to Account
             </a>
           {% endif %}
         </div>
@@ -38,80 +56,91 @@
   </div>
 </section>
 
-<!-- apne features -->
-<section class="py-5 bg-transparent position-relative z-1" style="margin-top: -3rem;">
+<!-- jo apne char features hain unka grid -->
+<section class="py-5 position-relative z-1" style="margin-top: -2rem;">
   <div class="container">
-    <div class="row g-4">
-      <div class="col-md-3">
-        <div class="card glass-panel hover-lift h-100 text-center p-4">
-          <div class="feature-icon mb-3 shadow-sm">
+    <div class="row g-4 justify-content-center">
+      
+      <!-- pehla feature card -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center p-4 border-0" style="background: rgba(255,255,255,0.8);">
+          <div class="feature-icon text-primary bg-primary bg-opacity-10 mb-4">
             <i class="fas fa-file-arrow-up"></i>
           </div>
-          <h5 class="fw-bold mb-2">1. Upload Resume</h5>
-          <p class="text-muted small mb-0">PDF, DOCX, TXT — or just paste the text directly.</p>
+          <h5 class="fw-bold mb-3 fs-5">1. Upload Resume</h5>
+          <p class="text-muted small mb-0 fw-medium">Upload PDF, DOCX, TXT ya fir sidha text paste kardo idhar.</p>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="card glass-panel hover-lift h-100 text-center p-4">
-          <div class="feature-icon mb-3 shadow-sm">
+      
+      <!-- dusra feature card -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center p-4 border-0" style="background: rgba(255,255,255,0.8);">
+          <div class="feature-icon text-success bg-success bg-opacity-10 mb-4">
             <i class="fas fa-briefcase"></i>
           </div>
-          <h5 class="fw-bold mb-2">2. Add Job Desc</h5>
-          <p class="text-muted small mb-0">Paste the JD and we extract the required skills automatically.</p>
+          <h5 class="fw-bold mb-3 fs-5">2. Add Job Desc</h5>
+          <p class="text-muted small mb-0 fw-medium">JD paste karo, backend waala AI khud skills nikal lega aaram se.</p>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="card glass-panel hover-lift h-100 text-center p-4">
-          <div class="feature-icon mb-3 shadow-sm">
+      
+      <!-- teesra feature card -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center p-4 border-0" style="background: rgba(255,255,255,0.8);">
+          <div class="feature-icon text-warning bg-warning bg-opacity-10 mb-4">
             <i class="fas fa-bolt"></i>
           </div>
-          <h5 class="fw-bold mb-2">3. Run Matching</h5>
-          <p class="text-muted small mb-0">Our AI scores each resume against the job using NLP.</p>
+          <h5 class="fw-bold mb-3 fs-5">3. Run Matching</h5>
+          <p class="text-muted small mb-0 fw-medium">NLP use karke system har resume ko JD k saath compare karta hai.</p>
         </div>
       </div>
-      <div class="col-md-3">
-        <div class="card glass-panel hover-lift h-100 text-center p-4">
-          <div class="feature-icon mb-3 shadow-sm">
+      
+      <!-- chotha feature card -->
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 text-center p-4 border-0" style="background: rgba(255,255,255,0.8);">
+          <div class="feature-icon text-danger bg-danger bg-opacity-10 mb-4">
             <i class="fas fa-ranking-star"></i>
           </div>
-          <h5 class="fw-bold mb-2">4. Review Ranks</h5>
-          <p class="text-muted small mb-0">See ranked candidates with Shortlisted / Maybe / Rejected labels.</p>
+          <h5 class="fw-bold mb-3 fs-5">4. Review Ranks</h5>
+          <p class="text-muted small mb-0 fw-medium">Score k basis pe Shortlisted, Maybe ya Rejected ka tag lag jayega.</p>
         </div>
       </div>
+      
     </div>
   </div>
 </section>
 
-<!-- demo id pwd -->
-<section class="py-5 mb-5">
+<!-- agar koi test karna chahta as recital to uske id pwd -->
+<section class="py-5 mb-5 mt-4">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-lg-6">
-        <div class="card glass-panel hover-lift">
-          <div class="card-body p-4 p-md-5 text-center">
-            <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 64px; height: 64px;">
-               <i class="fas fa-key fa-2x"></i>
+      <div class="col-lg-7">
+        <div class="card border-0 shadow-sm" style="border-radius: 24px;">
+          <div class="card-body p-4 p-md-5 text-center bg-white" style="border-radius: 24px;">
+            <div class="d-inline-flex align-items-center justify-content-center bg-dark text-white rounded-circle mb-4 shadow-sm" style="width: 72px; height: 72px;">
+               <i class="fas fa-user-lock fa-2x"></i>
             </div>
-            <h4 class="fw-bold mb-4">Demo Accounts</h4>
-            <div class="table-responsive">
-              <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <h3 class="fw-bold mb-2">Try Demo Accounts</h3>
+            <p class="text-muted mb-4 fw-medium">Testing ke liye pehle se bane hue id password neeche diye gaye hain.</p>
+            
+            <div class="table-responsive rounded-4 border">
+              <table class="table align-middle mb-0 table-borderless table-striped">
+                <thead class="table-light border-bottom">
                   <tr>
-                    <th class="ps-3 border-0 rounded-start">Role</th>
-                    <th class="border-0">Email</th>
-                    <th class="pe-3 border-0 rounded-end">Password</th>
+                    <th class="ps-4 py-3 text-start">Role</th>
+                    <th class="py-3 text-start">Email Address</th>
+                    <th class="pe-4 py-3 text-start">Password</th>
                   </tr>
                 </thead>
-                <tbody class="border-top-0">
+                <tbody>
                   <tr>
-                    <td class="ps-3 border-0"><span class="badge bg-success bg-opacity-25 text-success px-3 py-2 rounded-pill">Recruiter</span></td>
-                    <td class="border-0 fw-medium"><code>recruiter@demo.com</code></td>
-                    <td class="pe-3 border-0"><code>demo123</code></td>
+                    <td class="ps-4 py-3 text-start"><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2">Recruiter</span></td>
+                    <td class="py-3 text-start fw-bold text-dark">recruiter@demo.com</td>
+                    <td class="pe-4 py-3 text-start font-monospace bg-light rounded" style="font-size: 0.95rem;">demo123</td>
                   </tr>
                   <tr>
-                    <td class="ps-3 border-0"><span class="badge bg-danger bg-opacity-25 text-danger px-3 py-2 rounded-pill">Admin</span></td>
-                    <td class="border-0 fw-medium"><code>admin@demo.com</code></td>
-                    <td class="pe-3 border-0"><code>admin123</code></td>
+                    <td class="ps-4 py-3 text-start"><span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2">Admin View</span></td>
+                    <td class="py-3 text-start fw-bold text-dark">admin@demo.com</td>
+                    <td class="pe-4 py-3 text-start font-monospace bg-light rounded" style="font-size: 0.95rem;">admin123</td>
                   </tr>
                 </tbody>
               </table>

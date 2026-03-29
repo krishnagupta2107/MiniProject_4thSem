@@ -1,51 +1,66 @@
 {% extends "base.html" %}
+<!-- upar page ka naam -->
 {% block title %}Upload Resume – HireMatch{% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-7">
+    <!-- thoda margin leke bich me form rkha -->
+    <div class="col-lg-8 col-xl-7">
 
-      <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-          <li class="breadcrumb-item active">Upload Resume</li>
+      <!-- chota sa path navigation -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0 px-3 py-2 bg-white rounded-pill shadow-sm d-inline-flex border">
+          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}" class="text-decoration-none fw-medium text-muted"><i class="fas fa-home me-1"></i> Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('resume.list_resumes') }}" class="text-decoration-none fw-medium text-muted">Resumes</a></li>
+          <li class="breadcrumb-item active fw-bold text-primary" aria-current="page">Upload</li>
         </ol>
       </nav>
 
-      <h3 class="fw-bold mb-1">Upload a Resume</h3>
-      <p class="text-secondary mb-4">We'll extract skills, experience, and education automatically.</p>
+      <div class="mb-5 text-center text-sm-start">
+        <h2 class="fw-bolder mb-2 text-dark" style="letter-spacing: -0.02em;">Upload a Resume</h2>
+        <p class="text-muted fw-medium fs-6">Submit a PDF, DOCX file or just paste the raw text. Our backend NLP model will parse the skills and details automatically.</p>
+      </div>
 
-      <div class="card glass-panel shadow-sm">
-        <div class="card-body p-4">
+      <!-- main upload form card -->
+      <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <!-- card ke top pe patti -->
+        <div class="bg-primary" style="height: 4px; width: 100%;"></div>
+        
+        <div class="card-body p-4 p-sm-5">
           <form method="POST" enctype="multipart/form-data" action="{{ url_for('resume.upload_resume') }}" novalidate>
+            <!-- security form token -->
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
-            <!-- PDF aur DOCX yaha aayega -->
+            <!-- direct file dalne ka section -->
+            <div class="mb-4 bg-light rounded-4 p-4 border border-1 border-dashed text-center position-relative">
+              <div class="d-inline-flex align-items-center justify-content-center bg-white text-primary rounded-circle mb-3 shadow-sm" style="width: 60px; height: 60px;">
+                <i class="fas fa-cloud-arrow-up fs-3"></i>
+              </div>
+              <h5 class="fw-bold text-dark mb-1">Select File</h5>
+              <p class="text-muted small fw-medium mb-3">Support for PDF, DOCX, TXT (Max 10MB)</p>
+              <!-- file input field -->
+              <input type="file" name="resume_file" class="form-control" accept=".pdf,.doc,.docx,.txt" multiple style="max-width: 300px; margin: 0 auto;"/>
+            </div>
+
+            <!-- ya to text paste karo uske liye -->
+            <div class="d-flex align-items-center my-4">
+              <hr class="flex-grow-1 m-0 border-secondary">
+              <span class="text-muted fw-bold small text-uppercase mx-3 px-2">OR PASTE TEXT</span>
+              <hr class="flex-grow-1 m-0 border-secondary">
+            </div>
+
+            <!-- raw text paste krne wala box -->
             <div class="mb-4">
-              <label class="form-label fw-medium">Upload Files</label>
-              <input type="file" name="resume_file" class="form-control"
-                     accept=".pdf,.doc,.docx,.txt" multiple/>
-              <div class="form-text">PDF, DOCX, DOC or TXT — max 10 MB per file</div>
+              <label class="form-label fw-bold text-dark">Paste Raw Resume Text</label>
+              <textarea name="resume_text" class="form-control bg-light rounded-3 font-monospace p-3" rows="8" placeholder="Paste all the content from the resume here... (Agar file nahi dlni to)">{{ request.form.get('resume_text', '') }}</textarea>
             </div>
 
-            <div class="text-center text-muted my-3 position-relative">
-              <span class="px-3 bg-white">or paste text below</span>
-              <hr class="position-absolute top-50 start-0 end-0 m-0" style="z-index:-1"/>
-            </div>
-
-            <!-- direct text paste ka jugaad -->
-            <div class="mb-4">
-              <label class="form-label fw-medium">Paste Resume Text</label>
-              <textarea name="resume_text" class="form-control font-monospace" rows="10"
-                        placeholder="Paste resume content here...">{{ request.form.get('resume_text', '') }}</textarea>
-            </div>
-
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm hover-lift fw-bold">
-                <i class="fas fa-wand-magic-sparkles me-2"></i>Parse & Save
+            <div class="d-flex gap-3 pt-2">
+              <button type="submit" class="btn btn-primary rounded-pill px-5 shadow-sm hover-lift fw-bold flex-grow-1 flex-sm-grow-0 py-2">
+                <i class="fas fa-wand-magic-sparkles me-2 text-warning"></i> Parse Details
               </button>
-              <a href="{{ url_for('resume.list_resumes') }}" class="btn btn-light border rounded-pill px-4 hover-lift fw-medium">
+              <a href="{{ url_for('resume.list_resumes') }}" class="btn btn-light border rounded-pill px-4 hover-lift fw-bold text-dark py-2">
                 Cancel
               </a>
             </div>
@@ -56,4 +71,9 @@
     </div>
   </div>
 </div>
+
+<style>
+/* dashed border upload ke liye aur mast dikhega */
+.border-dashed { border-style: dashed !important; border-color: #cbd5e1 !important; }
+</style>
 {% endblock %}

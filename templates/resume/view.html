@@ -1,40 +1,51 @@
 {% extends "base.html" %}
+<!-- kon sa resume dekh rahe hai wo tab me aayega -->
 {% block title %}{{ resume.candidate_name or resume.filename }} – HireMatch{% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-8">
+    <div class="col-lg-8 col-xl-9">
 
-      <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-          <li class="breadcrumb-item"><a href="{{ url_for('resume.list_resumes') }}">Resumes</a></li>
-          <li class="breadcrumb-item active">{{ resume.candidate_name or resume.filename }}</li>
+      <!-- path barish -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0 px-3 py-2 bg-white rounded-pill shadow-sm d-inline-flex border">
+          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}" class="text-decoration-none fw-medium text-muted"><i class="fas fa-home me-1"></i> Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('resume.list_resumes') }}" class="text-decoration-none fw-medium text-muted">Resumes</a></li>
+          <li class="breadcrumb-item active fw-bold text-primary text-truncate" style="max-width: 150px;" aria-current="page">{{ resume.candidate_name or resume.filename }}</li>
         </ol>
       </nav>
 
-      <!-- upar wala card -->
-      <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-            <div>
-              <h5 class="fw-bold mb-1">{{ resume.candidate_name or "Unknown Candidate" }}</h5>
-              <div class="text-muted small">
-                <i class="fas fa-file me-1"></i>{{ resume.filename }}
-                &nbsp;·&nbsp;
-                <i class="fas fa-clock me-1"></i>{{ resume.uploaded_at.strftime('%d %b %Y') }}
+      <!-- upar wala header card jaha naam aur buttons hai -->
+      <div class="card border-0 shadow-sm mb-4 rounded-4 bg-white overflow-hidden">
+        <div class="card-body p-4 p-sm-5 relative">
+          <!-- thoda piche bg me icon dal diya design ke lie -->
+          <i class="fas fa-file-pdf position-absolute text-danger opacity-10" style="font-size: 150px; right: 20px; top: -20px; z-index: 0; transform: rotate(15deg);"></i>
+          
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-4 position-relative z-1">
+            <div class="d-flex align-items-center gap-4">
+              <!-- avatar style -->
+              <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle shadow-sm" style="width: 70px; height: 70px; font-size: 1.5rem;">
+                <i class="fas fa-user-tie"></i>
+              </div>
+              <div>
+                <h3 class="fw-bolder mb-1 text-dark" style="letter-spacing: -0.01em;">{{ resume.candidate_name or "Unknown Candidate" }}</h3>
+                <div class="d-flex flex-wrap align-items-center gap-3 mt-2">
+                  <span class="badge bg-light text-dark border px-2 py-1 fw-medium"><i class="fas fa-paperclip me-1 text-muted"></i>{{ resume.filename }}</span>
+                  <span class="text-muted small fw-medium"><i class="far fa-clock me-1"></i>Uploaded on {{ resume.uploaded_at.strftime('%A, %d %b %Y') }}</span>
+                </div>
               </div>
             </div>
+            
+            <!-- action buttons usiko form k sath de dia -->
             <div class="d-flex gap-2">
-              <a href="{{ url_for('match.run_match') }}" class="btn btn-primary btn-sm">
-                <i class="fas fa-bolt me-1"></i>Match to a Job
+              <a href="{{ url_for('match.run_match') }}" class="btn btn-primary rounded-pill shadow-sm hover-lift fw-bold px-4">
+                <i class="fas fa-bolt me-2 text-warning"></i>Match Job
               </a>
-              <form method="POST" action="{{ url_for('resume.delete_resume', resume_id=resume.resume_id) }}"
-                    onsubmit="return confirm('Delete this resume?')">
+              <form method="POST" action="{{ url_for('resume.delete_resume', resume_id=resume.resume_id) }}" onsubmit="return confirm('Pakka delete karna hai? AI sara data uda dega bhai.')">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <button class="btn btn-outline-danger btn-sm">
-                  <i class="fas fa-trash me-1"></i>Delete
+                <button class="btn btn-light rounded-pill border text-danger fw-bold hover-lift px-3">
+                  <i class="fas fa-trash"></i>
                 </button>
               </form>
             </div>
@@ -42,66 +53,98 @@
         </div>
       </div>
 
-      <div class="row g-4">
-        <!-- basic data -->
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm h-100">
-            <div class="card-body p-4">
-              <h6 class="fw-semibold mb-3">Profile</h6>
-              <div class="mb-2">
-                <span class="text-muted small d-block">Experience</span>
-                <span class="fw-medium">
-                  {% if resume.experience_years %}
-                    {{ resume.experience_years }} year(s)
-                  {% else %}
-                    Not detected
-                  {% endif %}
-                </span>
+      <div class="row g-4 mb-4">
+        <!-- left me statistics -->
+        <div class="col-md-5 col-lg-4">
+          <div class="card border-0 shadow-sm h-100 rounded-4 bg-white">
+            <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+              <h6 class="fw-bold mb-0 text-dark">Profile Snapshot</h6>
+            </div>
+            <div class="card-body p-4 d-flex flex-column gap-4">
+              
+              <!-- bande ka experience count -->
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                  <i class="fas fa-briefcase"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Years of Experience</div>
+                  <div class="fw-bolder text-dark fs-5">
+                    {% if resume.experience_years %}
+                      {{ resume.experience_years }} Yr(s)
+                    {% else %}
+                      <span class="badge bg-light text-muted border border-secondary border-opacity-25 rounded-pill px-2 py-1 fs-6">Not found</span>
+                    {% endif %}
+                  </div>
+                </div>
               </div>
-              <div class="mb-2">
-                <span class="text-muted small d-block">Education</span>
-                <span class="fw-medium">{{ resume.education_level or "Not detected" }}</span>
+
+              <!-- padhai kaha se ki -->
+              <div class="d-flex align-items-center gap-3">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Education Level</div>
+                  <div class="fw-bolder text-dark fs-6">{{ resume.education_level or "Not specified" }}</div>
+                </div>
               </div>
-              <div>
-                <span class="text-muted small d-block">Skills Found</span>
-                <span class="fw-medium">{{ resume.skills_list()|length }}</span>
+
+              <!-- kitne skills idhar NLP ne dhunde -->
+              <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top border-light">
+                <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                  <i class="fas fa-star text-dark"></i>
+                </div>
+                <div>
+                  <div class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.05em;">Skills Detected</div>
+                  <div class="fw-bolder text-dark fs-4" style="line-height: 1;">{{ resume.skills_list()|length }}</div>
+                </div>
               </div>
+
             </div>
           </div>
         </div>
 
-        <!-- bande ke skills -->
-        <div class="col-md-8">
-          <div class="card border-0 shadow-sm h-100">
+        <!-- right me skills ka tag cloud -->
+        <div class="col-md-7 col-lg-8">
+          <div class="card border-0 shadow-sm h-100 rounded-4 bg-white">
+            <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+              <h6 class="fw-bold mb-0 text-dark">Extracted AI Skills</h6>
+            </div>
             <div class="card-body p-4">
-              <h6 class="fw-semibold mb-3">Extracted Skills</h6>
               {% if resume.skills_list() %}
                 <div class="d-flex flex-wrap gap-2">
                   {% for skill in resume.skills_list() %}
-                    <span class="badge bg-primary bg-opacity-10 text-primary fw-normal px-3 py-2 rounded-pill">
-                      {{ skill }}
+                    <span class="badge bg-light text-primary border border-primary border-opacity-25 fw-semibold px-3 py-2 rounded-pill fs-6 hover-lift">
+                      <i class="fas fa-check-circle text-success me-1 opacity-75 mt-1" style="font-size: 0.8rem;"></i> {{ skill }}
                     </span>
                   {% endfor %}
                 </div>
               {% else %}
-                <p class="text-muted small mb-0">No skills extracted.</p>
+                <!-- agar kuch nai mila to blank rakho -->
+                <div class="text-center py-4">
+                  <i class="fas fa-laptop-code fa-2x text-muted opacity-25 mb-3"></i>
+                  <h6 class="fw-bold text-muted">No technical skills detected</h6>
+                  <p class="small text-muted mb-0">Our NLP model couldn't find distinct technical skills in this document.</p>
+                </div>
               {% endif %}
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- kacha text -->
-        <div class="col-12">
-          <div class="card border-0 shadow-sm">
-            <div class="card-header bg-transparent border-0 px-4 pt-4 pb-0">
-              <h6 class="fw-semibold mb-0">Raw Text</h6>
-            </div>
-            <div class="card-body px-4 pb-4">
-              <pre class="bg-body-secondary p-3 rounded-3 small text-wrap" style="max-height:300px;overflow-y:auto;">{{ resume.raw_text }}</pre>
-            </div>
+      <!-- original kacha text jo system me aaya tha -->
+      <div class="card border-0 shadow-sm rounded-4 bg-white">
+        <div class="card-header bg-white border-bottom pt-4 px-4 pb-3 py-3 d-flex justify-content-between align-items-center">
+          <h6 class="fw-bold mb-0 text-dark"><i class="fas fa-align-left text-muted me-2"></i>Raw Parsed Text</h6>
+          <span class="badge bg-light text-muted border">For reference only</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="bg-light p-4 rounded-bottom-4" style="max-height: 400px; overflow-y: auto;">
+            <!-- thoda cursive type font use kia text ke liye taki padhne me asani ho -->
+            <pre class="font-monospace text-dark small m-0 text-wrap" style="line-height: 1.6;">{{ resume.raw_text }}</pre>
           </div>
         </div>
-
       </div>
 
     </div>

@@ -1,60 +1,74 @@
 {% extends "base.html" %}
+<!-- JD dalo re baba -->
 {% block title %}Add Job Description – HireMatch{% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-7">
+    <div class="col-lg-8 col-xl-7">
 
-      <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
-          <li class="breadcrumb-item active">Add Job Description</li>
+      <!-- navigate krne ka naya system -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb mb-0 px-3 py-2 bg-white rounded-pill shadow-sm d-inline-flex border">
+          <li class="breadcrumb-item"><a href="{{ url_for('main.dashboard') }}" class="text-decoration-none fw-medium text-muted"><i class="fas fa-home me-1"></i> Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('job.list_jobs') }}" class="text-decoration-none fw-medium text-muted">Jobs</a></li>
+          <li class="breadcrumb-item active fw-bold text-primary" aria-current="page">Add JD</li>
         </ol>
       </nav>
 
-      <h4 class="fw-bold mb-1">Add Job Description</h4>
-      <p class="text-muted mb-4">Paste the job description — we'll pull out required skills automatically.</p>
+      <div class="mb-5 text-center text-sm-start">
+        <h2 class="fw-bolder mb-2 text-dark" style="letter-spacing: -0.02em;">Add Job Description</h2>
+        <p class="text-muted fw-medium fs-6">Paste the job description. Our AI will automatically pull out the required hard and soft skills.</p>
+      </div>
 
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
+      <!-- form k liye clean card container -->
+      <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+        <div class="bg-success" style="height: 4px; width: 100%;"></div>
+        
+        <div class="card-body p-4 p-sm-5">
           <form method="POST" action="{{ url_for('job.upload_jd') }}" novalidate>
+            <!-- security form validation k lie -->
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
-            <div class="row g-3 mb-3">
+            <!-- role k input box -->
+            <div class="row g-4 mb-4">
               <div class="col-md-6">
-                <label class="form-label fw-medium">Job Title <span class="text-danger">*</span></label>
-                <input type="text" name="title" class="form-control"
+                <label class="form-label fw-bold text-dark mb-1">Job Title <span class="text-danger">*</span></label>
+                <input type="text" name="title" class="form-control bg-light border-0 px-3 py-2 rounded-3"
                        placeholder="e.g. Backend Developer"
                        value="{{ request.form.get('title', '') }}" required/>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Company</label>
-                <input type="text" name="company" class="form-control"
+                <label class="form-label fw-bold text-dark mb-1">Company</label>
+                <input type="text" name="company" class="form-control bg-light border-0 px-3 py-2 rounded-3"
                        placeholder="e.g. Infosys"
                        value="{{ request.form.get('company', '') }}"/>
               </div>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label fw-medium">Location</label>
-              <input type="text" name="location" class="form-control"
+            <!-- jagah ka naam -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-dark mb-1">Location</label>
+              <input type="text" name="location" class="form-control bg-light border-0 px-3 py-2 rounded-3"
                      placeholder="e.g. Bangalore, Remote"
                      value="{{ request.form.get('location', '') }}"/>
             </div>
 
+            <!-- lamba chauda description text area -->
             <div class="mb-4">
-              <label class="form-label fw-medium">Job Description <span class="text-danger">*</span></label>
-              <textarea name="jd_text" class="form-control" rows="12"
+              <label class="form-label fw-bold text-dark mb-1">Job Description <span class="text-danger">*</span></label>
+              <textarea name="jd_text" class="form-control bg-light border-0 p-3 rounded-3" rows="10"
                         placeholder="Paste the full job description here...">{{ request.form.get('jd_text', '') }}</textarea>
-              <div class="form-text">The more detailed the description, the better the skill extraction.</div>
+              <div class="form-text mt-2 fw-medium"><i class="fas fa-circle-info text-primary me-1"></i> Jitna jada aur acha detail doge, NLP skill ache se niklega.</div>
             </div>
 
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-primary px-4">
-                <i class="fas fa-wand-magic-sparkles me-2"></i>Extract & Save
+            <div class="d-flex gap-3 pt-2">
+              <button type="submit" class="btn btn-primary rounded-pill px-5 shadow-sm hover-lift fw-bold flex-grow-1 flex-sm-grow-0 py-2">
+                <i class="fas fa-wand-magic-sparkles me-2 text-warning"></i> Extract Skills & Save
               </button>
-              <a href="{{ url_for('job.list_jobs') }}" class="btn btn-outline-secondary">Cancel</a>
+              <a href="{{ url_for('job.list_jobs') }}" class="btn btn-light border rounded-pill px-4 hover-lift fw-bold text-dark py-2">
+                Cancel
+              </a>
             </div>
           </form>
         </div>

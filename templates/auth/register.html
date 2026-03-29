@@ -1,71 +1,85 @@
 {% extends "base.html" %}
+<!-- pehli bar aane k lia rasta -->
 {% block title %}Register – HireMatch{% endblock %}
 
 {% block content %}
-<div class="auth-wrapper">
-  <div class="card auth-card glass-panel shadow-lg">
-    <div class="text-center mb-4">
-      <h3 class="fw-bold mb-2">Create an Account</h3>
-      <p class="text-muted">Start matching resumes to jobs in seconds</p>
-    </div>
-
-    <button type="button" class="btn btn-light border w-100 py-2 mb-3 fw-semibold d-flex align-items-center justify-content-center hover-lift" id="googleAuthBtn">
-        <i class="fab fa-google text-danger me-2"></i> Sign up with Google
-    </button>
+<div class="auth-wrapper d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 180px); padding: 2rem 0;">
+  
+  <div class="card auth-card border-0 shadow-lg bg-white rounded-4 overflow-hidden" style="width: 100%; max-width: 440px;">
+    <div class="bg-success" style="height: 5px; width: 100%;"></div>
     
-    <div class="d-flex align-items-center mb-4">
-       <hr class="flex-grow-1 opacity-25">
-       <span class="px-3 text-muted small fw-medium">OR EMAIL</span>
-       <hr class="flex-grow-1 opacity-25">
-    </div>
-
-    <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-
-      <div class="mb-3">
-        <label class="form-label fw-bold small text-muted text-uppercase">Full Name</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-user"></i></span>
-          <input type="text" name="full_name" class="form-control border-start-0 ps-0" placeholder="Krishna Gupta"
-                 value="{{ request.form.get('full_name', '') }}" required/>
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <div class="d-inline-flex justify-content-center align-items-center bg-success bg-opacity-10 text-success rounded-circle mb-3" style="width: 60px; height: 60px;">
+           <i class="fas fa-rocket fs-3"></i>
         </div>
+        <h3 class="fw-bolder mb-2 text-dark" style="letter-spacing: -0.02em;">Create Account</h3>
+        <p class="text-muted fw-medium fs-6 mb-0">It only takes a minute</p>
       </div>
 
-      <div class="mb-3">
-        <label class="form-label fw-bold small text-muted text-uppercase">Email Address</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-envelope"></i></span>
-          <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="you@example.com"
-                 value="{{ request.form.get('email', '') }}" required/>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label fw-bold small text-muted text-uppercase">Password</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-lock"></i></span>
-          <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="Minimum 6 characters" required/>
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <label class="form-label fw-bold small text-muted text-uppercase">Confirm Password</label>
-        <div class="input-group">
-          <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fas fa-check-double"></i></span>
-          <input type="password" name="confirm_password" class="form-control border-start-0 ps-0" placeholder="••••••••" required/>
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow">
-        Create Account <i class="fas fa-user-plus ms-2"></i>
+      <!-- firebase google button bypass sbse easy system -->
+      <button type="button" class="btn btn-white border w-100 py-2 mb-4 fw-bold text-dark d-flex align-items-center justify-content-center hover-lift shadow-sm rounded-pill bg-white" id="googleAuthBtn">
+          <i class="fab fa-google text-danger me-2 fs-5"></i> Register with Google
       </button>
-    </form>
+      
+      <div class="d-flex align-items-center mb-4">
+         <hr class="flex-grow-1 border-secondary m-0">
+         <span class="px-3 text-muted small fw-bold text-uppercase" style="letter-spacing: 0.1em; font-size: 0.75rem;">OR EMAIL</span>
+         <hr class="flex-grow-1 border-secondary m-0">
+      </div>
 
-    <div class="mt-4 text-center">
-      <p class="text-muted small mb-0">
-        Already have an account?
-        <a href="{{ url_for('auth.login') }}" class="fw-bold text-primary text-decoration-none">Log in</a>
-      </p>
+      <!-- purani standard rassi of inputs form ki -->
+      <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
+        <!-- form tokend csrf zaroori islie ye mastur chiz h -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark mb-1">Full Name</label>
+          <div class="position-relative">
+             <i class="fas fa-user position-absolute top-50 translate-middle-y text-muted opacity-50 ms-3"></i>
+             <input type="text" name="full_name" class="form-control bg-light border-0 ps-5 py-2 rounded-3 text-dark fw-medium" placeholder="Arjun Sharma"
+                    value="{{ request.form.get('full_name', '') }}" required/>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark mb-1">Email Address</label>
+          <div class="position-relative">
+             <i class="fas fa-envelope position-absolute top-50 translate-middle-y text-muted opacity-50 ms-3"></i>
+             <input type="email" name="email" class="form-control bg-light border-0 ps-5 py-2 rounded-3 text-dark fw-medium" placeholder="mail@example.com"
+                    value="{{ request.form.get('email', '') }}" required/>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold text-dark mb-1">Passsword</label>
+          <div class="position-relative">
+             <i class="fas fa-lock position-absolute top-50 translate-middle-y text-muted opacity-50 ms-3"></i>
+             <input type="password" name="password" class="form-control bg-light border-0 ps-5 py-2 rounded-3 text-dark fw-medium" placeholder="Min 6 characters" required/>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <label class="form-label fw-bold text-dark mb-1">Confirm Password</label>
+          <div class="position-relative">
+             <i class="fas fa-check-double position-absolute top-50 translate-middle-y text-muted opacity-50 ms-3"></i>
+             <input type="password" name="confirm_password" class="form-control bg-light border-0 ps-5 py-2 rounded-3 text-dark fw-medium" placeholder="Re-type password" required/>
+          </div>
+        </div>
+
+        <!-- mast bada sign up ka dabblet -->
+        <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm hover-lift fw-bold fs-6 mb-4">
+          Complete Sign Up <i class="fas fa-user-plus ms-2 fs-7"></i>
+        </button>
+      </form>
+
+      <div class="text-center">
+        <p class="text-muted fw-medium mb-0">
+          Already on HireMatch?
+          <a href="{{ url_for('auth.login') }}" class="fw-bold text-primary text-decoration-none border-bottom border-primary ms-1">Log in here</a>
+        </p>
+      </div>
+      
     </div>
   </div>
 </div>
@@ -73,6 +87,7 @@
 
 {% block scripts %}
 <script type="module">
+  // same bhai auth setup idhr lia jo login mr daala
   import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   
   const googleBtn = document.getElementById("googleAuthBtn");
@@ -98,12 +113,12 @@
               if (data.success) {
                   window.location.href = data.redirect;
               } else {
-                  alert("Google Sign-In backend verification failed: " + data.error);
+                  alert("Register via Google me error he vai: " + data.error);
               }
           } catch (error) {
               console.error(error);
               if (error.code !== "auth/popup-closed-by-user") {
-                  alert("Error during Google sign-up: " + error.message);
+                  alert("Khachra code for popup login: " + error.message);
               }
           }
       });
