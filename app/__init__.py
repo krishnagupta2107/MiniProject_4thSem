@@ -74,7 +74,8 @@ def create_app(config_class=Config):
     app.register_blueprint(api_bp, url_prefix="/api")
 
     with app.app_context():
-        _seed_demo_accounts()
+        if db is not None:
+            _seed_demo_accounts()
 
     @app.after_request
     def add_security_headers(response):
