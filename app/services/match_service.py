@@ -12,7 +12,6 @@ import re
 import math
 from collections import Counter
 
-import numpy as np
 from app.utils.extractors import nlp
 
 from app.utils.parsing import extract_experience_years
