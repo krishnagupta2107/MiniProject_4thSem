@@ -1,94 +1,57 @@
-# HireMatch – AI Resume–Job Matching System
+# AI-Powered Resume-Job Matching & Hiring Intelligence System
 
-🚀 **Live Demo:** [https://resume-matcher-c8de.onrender.com](https://resume-matcher-c8de.onrender.com)
+A highly rigorous, dual-engine (NLP + LLM) platform built to match candidates to Job Descriptions intelligently, strictly penalizing vague keyword-stuffing and rewarding deep, implicitly required technical skills. Built collaboratively by **Krishna Gupta, Anushka Bansal, and Mahak Bhatia**.
 
-**Project 77 | Team 43 | 4th Semester Mini Project**
+## 🔥 Project Highlights & "Wow" Factors
+*   **Dual-Layer Matcher:** Fuses strict mathematical metrics (TF-IDF keyword overlap + Experience scaling) with **SpaCy Cosine Similarity**.
+*   **Gemini Implicit Reasoning:** Augments rudimentary Job Descriptions natively by pinging the Gemini LLM during Job Uploads to derive hidden architectural requirements. 
+*   **Actionable Candidate Feedback:** Generates contextual feedback for "Rejected" or "Maybe" candidates indicating exactly what architectural skills they must learn.
+*   **Skill Distribution Radar Charts:** Highly visual, analytical frontend built on Vanilla JS and Bootstrap 5 to cleanly report the intersection of required vs. owned skills.
+*   **Serverless DB:** Powered completely by Google Firestore for seamless scalability.
 
-A Flask web application that automates resume screening using NLP-based skill extraction and a weighted matching algorithm.
+## 📥 Setup & Installation
 
-## Features
+### 1. Requirements
+*   Python 3.9+
+*   Google Firebase Service Account (`credentials.json`)
+*   Gemini API Key
 
-- Upload resumes (PDF, DOCX, TXT) or paste text directly
-- Paste job descriptions — skills are auto-extracted
-- Score resumes against jobs with a TF-IDF weighted algorithm & SpaCy Deep NLP 
-- Ranked results with Shortlisted / Maybe / Rejected labels
-- Actionable candidate feedback to help users improve their match scores
-- User authentication and database using Firebase & Firestore
-- Admin dashboard for system stats
-- Responsive, glassmorphic premium UI
-- CSRF protection on all forms
-- Rate limiting on uploads and matching
-
-## Tech Stack
-
-| Layer      | Technology |
-|------------|-----------|
-| Backend    | Python, Flask |
-| Auth       | Firebase Authentication & Flask-Login |
-| Database   | Google Cloud Firestore (Firebase) |
-| Parsing    | PyPDF2, python-docx, spaCy |
-| Frontend   | Custom CSS (Glassmorphism), Bootstrap 5, Chart.js |
-
-## Project Structure
-
-```
-├── app/
-│   ├── __init__.py          # App factory & Firebase init
-│   ├── models/
-│   │   ├── user.py
-│   │   ├── resume.py
-│   │   ├── job.py
-│   │   └── match.py
-│   ├── routes/
-│   │   ├── auth.py          # Login, register, logout 
-│   │   ├── main.py          # Dashboard, index
-│   │   ├── resume.py        # Resume upload, viewing, & deletion
-│   │   ├── job.py           # JD upload, viewing, & deletion
-│   │   ├── match.py         # Matching, scoring, feedback + results
-│   │   ├── admin.py         # Admin panel
-│   │   └── api.py           # JSON API
-│   └── utils/
-│       ├── parsing.py       # Regex & Spacy skill extraction
-│       ├── matching.py      # TF-IDF & Spacy scoring logic
-│       └── helpers.py       # Rate limiter, decorators
-├── templates/               # Jinja2 HTML templates
-├── static/                  # CSS (style.css) and JS (main.js)
-├── render.yaml              # Render deployment blueprint
-├── requirements.txt         # Python dependencies
-└── wsgi.py                  # Prod entrypoint
+### 2. Environment Variables (.env)
+Create a `.env` file at the root:
+```env
+FLASK_SECRET_KEY=your_secure_secret
+FIREBASE_CREDENTIALS=credentials.json
+GEMINI_API_KEY=your_gemini_project_key
 ```
 
-## Quick Start (Local Development)
-
+### 3. Quick Start
 ```bash
-# 1. Clone the repository
-git clone https://github.com/krishnagupta2107/MiniProject_4thSem.git
-cd MiniProject_4thSem
-
-# 2. Set up virtual environment
-python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
-
-# 3. Install dependencies and the SpaCy model
+# Install dependencies
 pip install -r requirements.txt
 
-# 4. Set up Environment Variables
-# Create a `.env` file in the root directory and add your Firebase credentials:
-# FIREBASE_API_KEY="..."
-# FIREBASE_JSON='{...}' 
-# SECRET_KEY="..."
+# Download the massive SpaCy NLP model locally
+python -m spacy download en_core_web_md
 
-# 5. Run the app
+# Boot the application
 flask run
 ```
-Open `http://localhost:5000` in your browser.
 
-## Matching Algorithm
+## 🔒 Production-Grade Security Enforcements
+*   **JWT Backend Validation:** All Google Firebase authorizations are actively verified cryptographically in the backend natively via `firebase-admin` rather than trusting arbitrary frontend cookies.
+*   **Werkzeug Cryptography:** Native username/password authentication strictly hashes strings off memory using `generate_password_hash`.
+*   **Algorithmic Sanitization:** Every single file parsed is explicitly run through truncation sequences (`sanitize_text()`) to natively block code-injection and large heap-overflow payloads before passing into the DB or LLM.
 
-Scores are calculated using a blend of heuristic and semantic approaches:
+## 🛠 Tech Stack
+| Component | Technology | Description |
+| :--- | :--- | :--- |
+| **Backend** | Flask (Python) | Modular monolithic framework. |
+| **Logic Core** | SpaCy, Regex | Drives the strict mathematical heuristic text processing. |
+| **Generative LLM** | Google Gemini Flash | Extracts implicit hidden job skills natively. |
+| **Database** | Google Firestore | Highly scalable NoSQL Database. |
+| **Frontend** | Jinja2, Bootstrap 5, Chart.js | Renders complex scoring visuals intuitively. |
 
-- **Semantic Similarity (50%)** — Deep NLP word-vector comparisons using spaCy between candidates and requirements.
-- **Skill Overlap (40%)** — TF-IDF boosted exact-match evaluation of parsed skills (rarer skills are weighted higher).
-- **Experience Match (10%)** — Does the candidate meet or exceed the year requirement?
+## 🏗 Architecture
+See `ARCHITECTURE.md` for full Data Flow and System Schematics.
 
-Labels: **Shortlisted** (≥70) | **Maybe** (45–69) | **Rejected** (<45)
+---
+*Built for Academic Evaluation and High-Performance Utility.*

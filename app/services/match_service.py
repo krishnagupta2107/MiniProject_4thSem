@@ -32,6 +32,7 @@ def score_resume_for_job(resume, jd) -> dict:
     matched = sorted(req_set & have_set)
     missing = sorted(req_set - have_set)
 
+    # ===== STEP 1: CALCULATE STRICT BASE NLP SCORE =====
     # kitna skill match hua
     if req_set:
         skill_score = len(matched) / len(req_set)
@@ -58,26 +59,24 @@ def score_resume_for_job(resume, jd) -> dict:
             doc_res = nlp(text2)
             cosine_sim = doc_jd.similarity(doc_res)
         else:
-            # model fail to yeh chalega
             cosine_sim = skill_score
     except Exception:
-        # khali text error se bachne ka try
         cosine_sim = skill_score
 
     semantic_score = float(cosine_sim)
 
-    # 40-50-10 ka weightage
-    raw_score = (skill_score * 40.0) + (semantic_score * 50.0) + (exp_bonus * 10.0)
-    score = round(min(raw_score, 100.0), 2)
+    # 70-20-10 ka strict weightage (prioritize hard skills over fuzzy semantics)
+    raw_score = (skill_score * 70.0) + (semantic_score * 20.0) + (exp_bonus * 10.0)
+    base_score = round(min(raw_score, 100.0), 2)
 
-    label = _get_label(score)
-
+    # ===== FINAL SCORE & FALLBACK EXPLANATION =====
+    label = _get_label(base_score)
     return {
-        "score":   score,
+        "score":   base_score,
         "label":   label,
         "matched": matched,
         "missing": missing,
-        "explanation": _build_explanation(score, matched, missing, exp_bonus, jd_years),
+        "explanation": _build_explanation(base_score, matched, missing, exp_bonus, jd_years),
     }
 
 

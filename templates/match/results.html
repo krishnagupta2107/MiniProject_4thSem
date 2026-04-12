@@ -130,7 +130,7 @@
                     
                     {% if m.feedback %}
                       <!-- popover for feedback so table chidiyaghar na bane -->
-                      <button type="button" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fw-medium small" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" title="AI Feedback" data-bs-content="{{ m.feedback }}">
+                      <button type="button" class="btn btn-sm btn-link text-warning p-0 text-decoration-none fw-medium small" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top" title="AI Feedback" data-bs-content="{{ m.feedback }}" data-bs-html="true">
                         <i class="fas fa-lightbulb"></i> Read Tips
                       </button>
                     {% endif %}
@@ -261,7 +261,7 @@
                       {% if m.feedback %}
                         <div class="alert alert-warning py-3 small mt-3 border-warning border-opacity-50">
                           <strong class="d-block mb-1 text-dark"><i class="fas fa-lightbulb text-warning me-1"></i> Evaluation AI:</strong> 
-                          <span class="text-dark opacity-100">{{ m.feedback }}</span>
+                          <span class="text-dark opacity-100">{{ m.feedback | safe }}</span>
                         </div>
                       {% endif %}
 
@@ -376,6 +376,17 @@ function renderRadar(matchId, jdSkills, matchedSkills) {
             ]
         },
         options: {
+            animation: {
+                duration: 2500,
+                easing: 'easeInOutElastic',
+                delay: (context) => {
+                    let delay = 0;
+                    if (context.type === 'data' && context.mode === 'default') {
+                        delay = context.dataIndex * 150;
+                    }
+                    return delay;
+                },
+            },
             scales: {
                 r: {
                     angleLines: { color: 'rgba(0,0,0,0.05)' },

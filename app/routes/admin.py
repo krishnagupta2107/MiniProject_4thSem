@@ -50,3 +50,52 @@ def admin_dashboard():
     return render_template("admin/dashboard.html", stats=stats, recent_users=recent_users,
                            chart_matches_labels=chart_matches_labels, chart_matches_data=chart_matches_data,
                            chart_overview_labels=chart_overview_labels, chart_overview_data=chart_overview_data)
+
+@admin_bp.route("/admin/users/<target_user_id>/delete", methods=["POST"])
+@login_required
+@admin_required
+def delete_user(target_user_id):
+    """RBAC Route: Allows administrators to proactively ban/delete user profiles from the Firestore backend."""
+    from flask import redirect, url_for, flash
+    user_to_delete = User.get(target_user_id)
+    if not user_to_delete:
+        flash("Target user not found in the database.", "danger")
+        return redirect(url_for("admin.admin_dashboard"))
+        
+    if user_to_delete.is_admin():
+        flash("Constraint Error: Cannot aggressively ban another administrator.", "warning")
+        return redirect(url_for("admin.admin_dashboard"))
+        
+    user_to_delete.delete()
+    flash(f"Successfully purged User {user_to_delete.email} and related memory hooks from the platform.", "success")
+    return redirect(url_for("admin.admin_dashboard"))
+
+@admin_bp.route("/admin/matches/export", methods=["GET"])
+@login_required
+@admin_required
+def export_matches_csv():
+    """
+    Constructs a dynamic CSV Analytics payload containing all recorded Match outputs 
+    and pipes it directly to the client as a downloadable memory stream.
+    
+    Returns:
+        Response: Flask HTTP Response encapsulating the CSV generator stream.
+    """
+    import csv
+    from io import StringIO
+    from flask import Response
+    
+    matches = MatchResult.get_all()
+    si = StringIO()
+    cw = csv.writer(si)
+    cw.writerow(['Match ID', 'Resume ID', 'Job ID', 'Algorithm Score', 'Status Label'])
+    for m in matches:
+        cw.writerow([m.match_id, m.resume_id, m.job_id, f"{round(m.score, 1)}%", m.shortlist_label])
+        
+    return Response(
+        si.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=match_analytics.csv"}
+    )
+
+

@@ -39,12 +39,51 @@ def upload_resume():
                 filename = secure_filename(file_input.filename)
                 filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
                 file_input.save(filepath)
-                parsed = parse_resume_file(filepath)
-
-                if "error" in parsed:
-                    flash(f"Could not read {filename}: {parsed['error']}", "danger")
-                    continue
                 
+                try:
+                    parsed = parse_resume_file(filepath)
+
+                    if "error" in parsed:
+                        flash(f"Could not read {filename}: {parsed['error']}", "danger")
+                        continue
+                    
+                    from app.utils.extractors import extract_email, extract_phone, extract_links, extract_entities
+                    raw = parsed["raw_text"]
+                    email = extract_email(raw)
+                    phone = extract_phone(raw)
+                    links = extract_links(raw)
+                    ents = extract_entities(raw)
+                    
+                    name = parsed["candidate_name"]
+                    if name == "Unknown" and ents["names"]:
+                        name = ents["names"][0]
+                        
+                    resume = Resume(
+                        user_id          = current_user.user_id,
+                        filename         = filename,
+                        file_path        = filepath,
+                        raw_text         = raw,
+                        extracted_skills = parsed["extracted_skills"],
+                        experience_years = parsed["experience_years"],
+                        education_level  = parsed["education_level"],
+                        candidate_name   = name,
+                        candidate_email  = email,
+                        candidate_phone  = phone,
+                        candidate_links  = links,
+                        candidate_companies = ents["companies"]
+                    )
+                    resume.save()
+                    processed_count += 1
+                    total_skills += len(parsed["skills_list"])
+                except Exception as e:
+                    current_app.logger.error(f"Error parsing {filename}: {e}")
+                    flash(f"An unexpected error occurred while parsing {filename}.", "danger")
+                    continue
+
+        # direct text paste
+        if text_input and not processed_count:
+            try:
+                parsed   = parse_resume_text(text_input)
                 from app.utils.extractors import extract_email, extract_phone, extract_links, extract_entities
                 raw = parsed["raw_text"]
                 email = extract_email(raw)
@@ -58,8 +97,8 @@ def upload_resume():
                     
                 resume = Resume(
                     user_id          = current_user.user_id,
-                    filename         = filename,
-                    file_path        = filepath,
+                    filename         = "pasted_text.txt",
+                    file_path        = "",
                     raw_text         = raw,
                     extracted_skills = parsed["extracted_skills"],
                     experience_years = parsed["experience_years"],
@@ -73,38 +112,9 @@ def upload_resume():
                 resume.save()
                 processed_count += 1
                 total_skills += len(parsed["skills_list"])
-
-        # direct text paste
-        if text_input and not processed_count:
-            parsed   = parse_resume_text(text_input)
-            from app.utils.extractors import extract_email, extract_phone, extract_links, extract_entities
-            raw = parsed["raw_text"]
-            email = extract_email(raw)
-            phone = extract_phone(raw)
-            links = extract_links(raw)
-            ents = extract_entities(raw)
-            
-            name = parsed["candidate_name"]
-            if name == "Unknown" and ents["names"]:
-                name = ents["names"][0]
-                
-            resume = Resume(
-                user_id          = current_user.user_id,
-                filename         = "pasted_text.txt",
-                file_path        = "",
-                raw_text         = raw,
-                extracted_skills = parsed["extracted_skills"],
-                experience_years = parsed["experience_years"],
-                education_level  = parsed["education_level"],
-                candidate_name   = name,
-                candidate_email  = email,
-                candidate_phone  = phone,
-                candidate_links  = links,
-                candidate_companies = ents["companies"]
-            )
-            resume.save()
-            processed_count += 1
-            total_skills += len(parsed["skills_list"])
+            except Exception as e:
+                current_app.logger.error(f"Error parsing pasted text: {e}")
+                flash("An unexpected error occurred while processing the pasted text.", "danger")
 
         if processed_count == 0:
             flash("Please upload a valid file or paste your resume text.", "warning")

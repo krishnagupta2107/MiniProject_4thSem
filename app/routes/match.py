@@ -11,7 +11,7 @@ from flask_login import login_required, current_user
 from app.models.resume import Resume
 from app.models.job    import JobDescription
 from app.models.match  import MatchResult
-from app.utils.matching import score_resume_for_job
+from app.services.match_service import score_resume_for_job
 from app.utils.helpers  import rate_limit
 
 match_bp = Blueprint("match", __name__)
@@ -54,11 +54,29 @@ def run_match():
                     break
 
             fb = None
-            if result["label"] in ["Maybe", "Rejected"]:
+            if result["score"] < 90:
+                suggestions = ["<strong>Areas for Improvement:</strong><br>"]
+                
+                # Check for missing skills
                 if result["missing"]:
-                    fb = f"To improve your chances, focus on acquiring these missing skills: {', '.join(result['missing'][:5])}."
+                    missing_str = ", ".join(result["missing"])
+                    suggestions.append(f"• <strong>Skills to Learn/Add:</strong> Consider acquiring these missing skills and adding them to your resume: {missing_str}.")
                 else:
-                    fb = "Consider gaining more targeted experience corresponding to the job description."
+                    suggestions.append("• <strong>Keywords:</strong> While you have the core skills, try optimizing your resume terminology to better align with the job description phrasing.")
+
+                # Check for experience gap
+                if result["score"] < 70:
+                    suggestions.append("• <strong>Experience:</strong> Building relevant side projects or gaining hands-on experience in the required domains can significantly bridge this gap.")
+                
+                # Resume formatting action items
+                if result["label"] == "Rejected":
+                    suggestions.append("• <strong>Next Steps:</strong> This role might be a stretch given your current profile. Focus on entry-level equivalent roles or extensively upskill in the core requirements.")
+                elif result["label"] == "Maybe":
+                    suggestions.append("• <strong>Actionable Steps:</strong> Highlight any hidden relevant experiences in your bullet points to push your profile into the 'Shortlisted' tier.")
+
+                fb = "<br>".join(suggestions)
+            else:
+                fb = "Great match! Ensure your resume formatting is clean and easy to read before applying."
 
             if existing:
                 existing.relevance_score = result["score"]

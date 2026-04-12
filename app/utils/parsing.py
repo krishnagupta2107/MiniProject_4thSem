@@ -168,8 +168,16 @@ def parse_resume_text(text: str) -> dict:
 
 def parse_job_description(text: str, title: str = "Job") -> dict:
     text = text.strip()
-    skills = extract_skills(text)
-    exp    = extract_experience_years(text)
+    base_skills = extract_skills(text)
+    
+    # Try extending required skills natively using LLM (if API available)
+    try:
+        from app.services.ai_service import extract_job_skills_with_llm
+        skills = extract_job_skills_with_llm(text, base_skills)
+    except Exception:
+        skills = base_skills
+        
+    exp = extract_experience_years(text)
     return {
         "raw_text":        text,
         "title":           title,

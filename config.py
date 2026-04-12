@@ -11,9 +11,10 @@ class Config:
     
     
     # file uploads
+    # file uploads
     UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
-    MAX_CONTENT_LENGTH = 10 * 1024 * 1024   # 10 MB
-    ALLOWED_EXTENSIONS = {"pdf", "doc", "docx", "txt"}
+    MAX_CONTENT_LENGTH = 5 * 1024 * 1024   # 5 MB Strict Limit
+    ALLOWED_EXTENSIONS = {"pdf", "docx", "txt"}
     
     # wtf forms (csrf protection)
     WTF_CSRF_ENABLED = True
@@ -31,6 +32,7 @@ class Config:
     FIREBASE_MESSAGING_SENDER_ID = os.environ.get("FIREBASE_MESSAGING_SENDER_ID", "338795102474")
     FIREBASE_APP_ID = os.environ.get("FIREBASE_APP_ID", "1:338795102474:web:83979f5dbdad2942f9faf3")
     FIREBASE_MEASUREMENT_ID = os.environ.get("FIREBASE_MEASUREMENT_ID", "G-S53PY3YNVR")
+    GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
     # security configurations
     SESSION_COOKIE_HTTPONLY = True
