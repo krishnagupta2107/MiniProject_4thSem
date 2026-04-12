@@ -25,17 +25,27 @@ def create_app(config_class=Config):
 
     global db
     if not firebase_admin._apps:
-        # production key check krlo
-        firebase_json_str = os.environ.get("FIREBASE_JSON")
-        if firebase_json_str:
-            import json
-            cred_dict = json.loads(firebase_json_str)
-            cred = credentials.Certificate(cred_dict)
-        else:
-            # local key try maro
-            cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "..", "resume-checker-key.json"))
-        firebase_admin.initialize_app(cred)
-    db = firestore.client()
+        try:
+            # production key check krlo
+            firebase_json_str = os.environ.get("FIREBASE_JSON")
+            if firebase_json_str:
+                import json
+                cred_dict = json.loads(firebase_json_str)
+                cred = credentials.Certificate(cred_dict)
+            else:
+                # local key try maro
+                local_key = os.path.join(os.path.dirname(__file__), "..", "resume-checker-key.json")
+                if not os.path.exists(local_key):
+                    raise FileNotFoundError("No Firebase credentials found. Set FIREBASE_JSON env var on Render.")
+                cred = credentials.Certificate(local_key)
+            firebase_admin.initialize_app(cred)
+            db = firestore.client()
+        except Exception as e:
+            import logging
+            logging.warning(f"Firebase init failed: {e}. Some features may not work.")
+            db = None
+    else:
+        db = firestore.client()
 
     # extension chalu
     csrf.init_app(app)
