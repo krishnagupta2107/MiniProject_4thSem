@@ -28,6 +28,11 @@
           <div class="fw-bolder text-dark fs-5" style="line-height:1;">{{ avg_score }}</div>
         </div>
       </div>
+      <!-- Blind Hiring Toggle -->
+      <div class="form-check form-switch mt-2 mt-md-0 d-flex align-items-center gap-2 border px-3 py-2 rounded-pill bg-light shadow-sm">
+        <input class="form-check-input m-0" type="checkbox" id="blindHiringToggle" onchange="toggleBlindHiring()" style="cursor: pointer;">
+        <label class="form-check-label fw-bold small text-muted mb-0" for="blindHiringToggle" style="padding-top: 2px; cursor: pointer;">Blind Hiring</label>
+      </div>
       <!-- firse run karna hai kisi aur job pe to ye dabao -->
       <a href="{{ url_for('match.run_match') }}" class="btn btn-light fw-bold text-primary rounded-pill hover-lift px-3 py-2 border">
         <i class="fas fa-redo-alt me-2"></i>Re-run Match
@@ -93,7 +98,7 @@
                       <i class="fas fa-file-pdf"></i>
                     </div>
                     <div>
-                      <div class="fw-bold text-dark">{{ m.resume.candidate_name or m.resume.filename }}</div>
+                      <div class="fw-bold text-dark candidate-name">{{ m.resume.candidate_name or m.resume.filename }}</div>
                       <div class="text-muted small fw-medium mt-1">
                         {% if m.resume.experience_years %}{{ m.resume.experience_years }}yrs exp <span class="mx-1 text-light-gray">|</span>{% endif %}
                         {{ m.resume.education_level or 'Not specified' }}
@@ -209,7 +214,7 @@
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 bg-white p-3 rounded-4 shadow-sm border border-black border-opacity-10">
               <div>
                 <p class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 0.05em;">Applicant</p>
-                <h6 class="fw-bold fs-5 text-dark mb-0">{{ m.resume.candidate_name or m.resume.filename }}</h6>
+                <h6 class="fw-bold fs-5 text-dark mb-0 candidate-name">{{ m.resume.candidate_name or m.resume.filename }}</h6>
               </div>
               <div class="text-end">
                 <p class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing: 0.05em;">Applying For</p>
@@ -267,7 +272,7 @@
 
                       <!-- detail wale emails phone -->
                       {% if m.resume.candidate_email or m.resume.candidate_phone %}
-                        <div class="mt-3 pt-3 border-top">
+                        <div class="mt-3 pt-3 border-top candidate-contact">
                            {% if m.resume.candidate_email %}<div class="text-muted small fw-medium mb-1"><i class="fas fa-envelope me-2 w-15px"></i>{{ m.resume.candidate_email }}</div>{% endif %}
                            {% if m.resume.candidate_phone %}<div class="text-muted small fw-medium"><i class="fas fa-phone me-2 w-15px"></i>{{ m.resume.candidate_phone }}</div>{% endif %}
                         </div>
@@ -427,6 +432,38 @@ function exportPDF(matchId) {
         element.classList.add('shadow', 'rounded-4');
         element.style.padding = '';
     });
+}
+
+function toggleBlindHiring() {
+  const isBlind = document.getElementById('blindHiringToggle').checked;
+  const names = document.querySelectorAll('.candidate-name');
+  const contacts = document.querySelectorAll('.candidate-contact');
+  
+  // Create a mapping of original names to anonymous names to keep them consistent across table and modal
+  const nameMapping = {};
+  let counter = 1;
+  
+  names.forEach(el => {
+    if (!el.dataset.original) {
+      el.dataset.original = el.innerText;
+    }
+    const originalName = el.dataset.original;
+    
+    if (isBlind) {
+      if (!nameMapping[originalName]) {
+        nameMapping[originalName] = 'Candidate #' + counter++;
+      }
+      el.innerText = nameMapping[originalName];
+      el.classList.add('text-primary'); // Make it look like a placeholder
+    } else {
+      el.innerText = originalName;
+      el.classList.remove('text-primary');
+    }
+  });
+  
+  contacts.forEach(el => {
+    el.style.display = isBlind ? 'none' : '';
+  });
 }
 </script>
 {% endblock %}
