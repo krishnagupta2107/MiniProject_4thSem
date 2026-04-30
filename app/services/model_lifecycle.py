@@ -1,3 +1,8 @@
+"""
+services/model_lifecycle.py
+Persistent logging system for tracking AI model performance and evaluation metrics over time.
+"""
+
 import os
 import json
 import time

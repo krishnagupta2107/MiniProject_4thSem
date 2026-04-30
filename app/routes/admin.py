@@ -97,7 +97,7 @@ def export_matches_csv():
     cw = csv.writer(si)
     cw.writerow(['Match ID', 'Resume ID', 'Job ID', 'Algorithm Score', 'Status Label'])
     for m in matches:
-        cw.writerow([m.match_id, m.resume_id, m.job_id, f"{round(m.score, 1)}%", m.shortlist_label])
+        cw.writerow([m.match_id, m.resume_id, m.job_id, f"{round(m.relevance_score, 1)}%", m.shortlist_label])
         
     return Response(
         si.getvalue(),

@@ -11,7 +11,7 @@ class TestRegister:
     def test_register_page_loads(self, client):
         response = client.get("/register")
         assert response.status_code == 200
-        assert b"Create an account" in response.data
+        assert b"Create Account" in response.data
 
     def test_register_success(self, client, app):
         response = client.post("/register", data={
@@ -63,7 +63,7 @@ class TestLogin:
     def test_login_page_loads(self, client):
         response = client.get("/login")
         assert response.status_code == 200
-        assert b"Welcome back" in response.data
+        assert b"Welcome Back" in response.data
 
     def test_login_success(self, client, test_user):
         response = client.post("/login", data={
@@ -93,7 +93,7 @@ class TestLogout:
     def test_logout_redirects(self, logged_in_client):
         response = logged_in_client.get("/logout", follow_redirects=True)
         assert response.status_code == 200
-        assert b"logged out" in response.data
+        assert b"You have been logged out" in response.data
 
     def test_logout_requires_login(self, client):
         response = client.get("/logout", follow_redirects=True)

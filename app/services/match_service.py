@@ -1,5 +1,5 @@
 """
-matching.py
+services/match_service.py
 Core resume-to-job matching logic.
 
 Scoring breakdown:

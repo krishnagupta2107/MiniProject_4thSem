@@ -13,6 +13,7 @@ graph TD
         Flask --> Jobs[Job Routes]
         Flask --> Resumes[Resume Routes]
         Flask --> Matcher[Match Routes]
+        Flask --> Admin[Admin & Metrics Routes]
     end
     
     subgraph AI/NLP Services Layer
@@ -26,6 +27,8 @@ graph TD
         Jobs --> Firestore
         Resumes --> Firestore
         Matcher --> Firestore
+        Admin --> Firestore
+        Matcher --> LifecycleLogs[JSONL Performance Logs]
     end
 ```
 
@@ -39,9 +42,13 @@ Instead of relying solely on SpaCy's Cosine Similarity (which falsely equates di
 *   **10% Weight**: Year-over-Year Experience calculation bonus.
 
 ### Pass 2: Gemini Job Skill Augmentation
-When Jobs are uploaded, the description text passes through the Gemini API (`app/utils/llm_matcher.py`) strictly to extract **implicit requirements**. For example, if a JD requests "scalable orchestration", Gemini mandates "docker" and "kubernetes" as hidden requirements against which the candidate is strictly checked during the mathematical pass.
+When Jobs are uploaded, the description text passes through the Gemini API (`app/services/ai_service.py`) strictly to extract **implicit requirements**. For example, if a JD requests "scalable orchestration", Gemini mandates "docker" and "kubernetes" as hidden requirements against which the candidate is strictly checked during the mathematical pass.
 
-## 3. Data Flow: Candidate Processing
+## 3. Model Lifecycle & Evaluation Framework
+To address the "Model Lifecycle Management" requirement, the system implements a persistent logging and evaluation loop:
+*   **Metric Extraction:** Every match run calculates `Precision`, `Recall`, and `F1 Score` based on the intersection of extracted vs. required skills.
+*   **Lifecycle Logging:** Results are appended to `instance/model_logs/evaluation_metrics.jsonl` with timestamps and model versioning.
+*   **Analytics Dashboard:** The Admin Metrics view (`/admin/metrics`) aggregates these logs to show real-time model performance trends.
 
 ```mermaid
 sequenceDiagram
@@ -62,9 +69,10 @@ sequenceDiagram
     User->>UI: Run AI Matcher
     UI->>Flask: Execute Matching Loop
     Flask->>NLP: Calculate 70-20-10 Algorithmic Bounds
+    Flask->>Lifecycle: Log Precision/Recall/F1
     Flask-->>DB: Store relevance score, labels, missing skills
 ```
 
-## 4. Security & Validation
+## 5. Security & Validation
 *   **Text Sanitization:** All raw resume text formats (`.pdf`, `.docx`) are passed via custom backend sanitization functions (`sanitize_text()`) to strip potentially malicious payload strings before interacting with memory models.
 *   **Authentication Hooks:** Standard protected endpoint routing is enforced across the Blueprint architecture.

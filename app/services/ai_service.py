@@ -1,3 +1,8 @@
+"""
+services/ai_service.py
+Google Gemini 1.5 Flash integration for job skill expansion and project-based resume auditing.
+"""
+
 import os
 import json
 import google.generativeai as genai

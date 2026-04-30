@@ -147,14 +147,10 @@ source venv/bin/activate
 ### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
-```
-
-### 4. Download the SpaCy NLP Model
-```bash
 python -m spacy download en_core_web_md
 ```
 
-### 5. Configure Environment Variables
+### 4. Configure Environment Variables
 Create a `.env` file at the project root:
 ```env
 SECRET_KEY=your-very-secure-random-secret-key
