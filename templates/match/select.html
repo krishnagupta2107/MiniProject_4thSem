@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-<!-- run match karne wala page -->
+<!-- Match Selection Page -->
 {% block title %}Run Match – HireMatch{% endblock %}
 
 {% block content %}
@@ -7,14 +7,14 @@
   <div class="row justify-content-center">
     <div class="col-lg-7 col-xl-6">
 
-      <!-- upar thoda heading design -->
+      <!-- Heading Section -->
       <div class="text-center mb-5">
         <div class="d-inline-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-circle mb-3 shadow-sm" style="width: 80px; height: 80px;">
           <i class="fas fa-bolt fa-2x"></i>
         </div>
         <h2 class="fw-bolder mb-2 text-dark" style="letter-spacing: -0.02em;">Run Resume Matching</h2>
         <p class="text-muted fw-medium fs-6 px-4">
-          Select a job description below, aur humari makkhan NLP wali system saare uploaded resumes ko usse compare karke rank karegi.
+          Select a job description below, and our advanced NLP system will instantly parse, compare, and rank all uploaded candidate resumes.
         </p>
       </div>
 
@@ -22,8 +22,8 @@
         <div class="bg-warning" style="height: 4px; width: 100%;"></div>
         <div class="card-body p-4 p-md-5">
           {% if jobs %}
-            <form method="POST" action="{{ url_for('match.run_match') }}" novalidate>
-              <!-- form token zaruri hai bhai -->
+            <form method="POST" action="{{ url_for('match.run_match') }}" id="matchForm" novalidate onsubmit="showLoading()">
+              <!-- CSRF Token -->
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
               <div class="mb-4 text-start">
@@ -40,17 +40,19 @@
                 </div>
               </div>
 
-              <!-- main bada wala button run krne ke liye -->
-              <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow hover-lift fw-bold text-uppercase" style="letter-spacing: 0.05em;">
-                <i class="fas fa-bolt me-2 text-warning"></i>Start AI Matching
+              <!-- Primary Action Button -->
+              <button type="submit" id="submitBtn" class="btn btn-primary w-100 py-3 rounded-pill shadow hover-lift fw-bold text-uppercase" style="letter-spacing: 0.05em;">
+                <span id="btnText"><i class="fas fa-bolt me-2 text-warning"></i>Start AI Matching</span>
+                <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                <span id="btnLoadingText" class="d-none ms-2">Analyzing Candidates...</span>
               </button>
             </form>
           {% else %}
-            <!-- agar job list khali hai to idhar gherenge -->
+            <!-- Empty State -->
             <div class="text-center py-4">
               <i class="fas fa-briefcase fa-3x text-muted opacity-25 mb-4 d-block"></i>
               <h5 class="fw-bold text-dark mb-2">No jobs available</h5>
-              <p class="text-muted mb-4 fw-medium">Pehle ek JD add karo tabhi toh run kar paoge matching bhai.</p>
+              <p class="text-muted mb-4 fw-medium">You must add at least one Job Description before running the matching engine.</p>
               <a href="{{ url_for('job.upload_jd') }}" class="btn btn-primary rounded-pill fw-bold px-4 py-2 shadow-sm">
                 <i class="fas fa-plus me-2 text-white-50"></i>Add Job Description
               </a>
@@ -62,4 +64,17 @@
     </div>
   </div>
 </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showLoading() {
+  document.getElementById('btnText').classList.add('d-none');
+  document.getElementById('btnSpinner').classList.remove('d-none');
+  document.getElementById('btnLoadingText').classList.remove('d-none');
+  // Small delay before disabling to ensure form submission triggers
+  setTimeout(() => { document.getElementById('submitBtn').disabled = true; }, 50);
+}
+</script>
 {% endblock %}
