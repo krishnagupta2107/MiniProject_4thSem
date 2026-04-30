@@ -1,3 +1,11 @@
+"""
+config.py
+Application configuration classes for Flask.
+
+Config:     Used for development and production.
+TestConfig: Used by pytest with CSRF disabled and a fixed secret key.
+"""
+
 import os
 from dotenv import load_dotenv
 
@@ -10,8 +18,7 @@ class Config:
     
     
     
-    # file uploads
-    # file uploads
+    # File upload settings
     UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024   # 5 MB Strict Limit
     ALLOWED_EXTENSIONS = {"pdf", "docx", "txt"}

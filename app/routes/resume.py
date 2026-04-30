@@ -22,6 +22,18 @@ resume_bp = Blueprint("resume", __name__)
 @login_required
 @rate_limit("upload_resume", limit=5, window=60)
 def upload_resume():
+    """
+    Handle resume upload from both file (PDF/DOCX/TXT) and raw pasted text.
+    
+    GET:  Renders the upload form.
+    POST: Validates input, parses the file or text using NLP pipeline,
+          extracts skills/experience/education, and stores it in Firestore.
+    
+    Raises:
+        flash(warning): If file type is unsupported.
+        flash(danger):  If parsing fails.
+        flash(success): On successful upload.
+    """
     if request.method == "POST":
         file_inputs = request.files.getlist("resume_file")
         text_input  = sanitize_text(request.form.get("resume_text", ""))
@@ -129,6 +141,7 @@ def upload_resume():
 @resume_bp.route("/resumes")
 @login_required
 def list_resumes():
+    """List all resumes uploaded by the currently logged-in user."""
     resumes = Resume.query_by_user(current_user.user_id)
     return render_template("resume/list.html", resumes=resumes)
 
@@ -136,6 +149,12 @@ def list_resumes():
 @resume_bp.route("/resumes/<resume_id>")
 @login_required
 def view_resume(resume_id):
+    """
+    View a specific resume's parsed details.
+    
+    Only the resume owner or an admin can view the resume.
+    Returns 404 if the resume_id does not exist in Firestore.
+    """
     from flask import abort
     resume = Resume.get(resume_id)
     if not resume:
@@ -152,6 +171,12 @@ def view_resume(resume_id):
 @resume_bp.route("/resumes/<resume_id>/delete", methods=["POST"])
 @login_required
 def delete_resume(resume_id):
+    """
+    Permanently delete a resume from Firestore.
+    
+    Only the resume owner or an admin can perform this action.
+    Returns 404 if the resume_id does not exist.
+    """
     from flask import abort
     resume = Resume.get(resume_id)
     if not resume:

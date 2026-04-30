@@ -11,12 +11,14 @@ ALLOWED_EXTENSIONS = {"pdf", "doc", "docx", "txt"}
 
 
 def allowed_file(filename: str) -> bool:
+    """Return True if the file extension is in the allowed set (pdf, doc, docx, txt)."""
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # file padhne ka code
 
 def _read_pdf(filepath: str) -> str:
+    """Extract all text from a PDF file using PyPDF2. Returns error string on failure."""
     try:
         import PyPDF2
         pages = []
@@ -32,6 +34,7 @@ def _read_pdf(filepath: str) -> str:
 
 
 def _read_docx(filepath: str) -> str:
+    """Extract all paragraph text from a .docx file using python-docx."""
     try:
         from docx import Document
         doc = Document(filepath)
@@ -41,11 +44,13 @@ def _read_docx(filepath: str) -> str:
 
 
 def _read_txt(filepath: str) -> str:
+    """Read a plain text file, ignoring encoding errors."""
     with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
         return f.read()
 
 
 def extract_text_from_file(filepath: str) -> str:
+    """Dispatch to the appropriate reader based on file extension and return raw text."""
     ext = os.path.splitext(filepath)[1].lower()
     if ext == ".pdf":
         return _read_pdf(filepath)
@@ -92,14 +97,23 @@ ALL_SKILLS = [skill for group in SKILLS_DB.values() for skill in group]
 
 
 def extract_skills(text: str) -> list:
+    """
+    Scan text for known technical and soft skills from the SKILLS_DB dictionary.
+
+    Uses word-boundary regex to avoid partial matches (e.g. 'c' inside 'cisco').
+
+    Args:
+        text (str): Raw document text.
+
+    Returns:
+        list: Sorted list of unique matched skill strings in lowercase.
+    """
     text_lower = text.lower()
-    # special character hatao but c++ wagera rakhna
     text_clean = re.sub(r"[^\w\s\+\#\/\.]", " ", text_lower)
     text_clean = re.sub(r"\s+", " ", text_clean).strip()
 
     found = []
     for skill in ALL_SKILLS:
-        # regex jugaad for skills
         pattern = r"(?<!\w)" + re.escape(skill) + r"(?!\w)"
         if re.search(pattern, text_clean):
             found.append(skill)
@@ -123,6 +137,11 @@ def extract_experience_years(text: str) -> float:
 
 
 def extract_education_level(text: str) -> str:
+    """
+    Detect the highest education level mentioned in the given text.
+
+    Returns one of: 'PhD', 'Masters', 'Bachelors', 'Diploma', or '' if none found.
+    """
     t = text.lower()
     if "phd" in t or "doctor" in t:
         return "PhD"
@@ -156,6 +175,12 @@ def extract_candidate_name(text: str) -> str:
 # main functions
 
 def parse_resume_file(filepath: str) -> dict:
+    """
+    Parse a resume from an uploaded file (PDF, DOCX, or TXT).
+
+    Returns a dict with 'error' key if the file could not be read,
+    otherwise returns the full resume data dict from _build_resume_dict.
+    """
     raw = extract_text_from_file(filepath)
     if raw.startswith("["):
         return {"error": raw, "raw_text": ""}
@@ -163,14 +188,32 @@ def parse_resume_file(filepath: str) -> dict:
 
 
 def parse_resume_text(text: str) -> dict:
+    """
+    Parse a resume from raw pasted text input.
+
+    Strips whitespace and delegates to _build_resume_dict for full extraction.
+    """
     return _build_resume_dict(text.strip())
 
 
 def parse_job_description(text: str, title: str = "Job") -> dict:
+    """
+    Parse a job description and extract required skills and experience.
+
+    First performs keyword-based extraction via extract_skills(), then
+    optionally augments with Gemini LLM to surface implicit skill requirements.
+
+    Args:
+        text  (str): Raw job description text.
+        title (str): Job title for metadata context.
+
+    Returns:
+        dict: Contains 'raw_text', 'required_skills' (CSV), 'experience_req',
+              and 'skills_list' (list of strings).
+    """
     text = text.strip()
     base_skills = extract_skills(text)
     
-    # Try extending required skills natively using LLM (if API available)
     try:
         from app.services.ai_service import extract_job_skills_with_llm
         skills = extract_job_skills_with_llm(text, base_skills)
@@ -188,6 +231,15 @@ def parse_job_description(text: str, title: str = "Job") -> dict:
 
 
 def _build_resume_dict(raw_text: str) -> dict:
+    """
+    Run the full NLP extraction pipeline on raw resume text.
+
+    Extracts: skills, experience years, education level, and candidate name.
+
+    Returns:
+        dict with keys: raw_text, candidate_name, extracted_skills (CSV),
+        experience_years (float), education_level (str), skills_list (list).
+    """
     skills  = extract_skills(raw_text)
     exp     = extract_experience_years(raw_text)
     edu     = extract_education_level(raw_text)

@@ -18,6 +18,17 @@ job_bp = Blueprint("job", __name__)
 @login_required
 @rate_limit("upload_jd", limit=5, window=60)
 def upload_jd():
+    """
+    Handle job description creation from pasted text.
+
+    GET:  Renders the upload form.
+    POST: Validates inputs, runs NLP parsing to extract required skills,
+          and persists the job description to Firestore.
+    
+    Raises:
+        flash(warning): If title or description text is missing.
+        flash(success): On successful save with skill count.
+    """
     if request.method == "POST":
         title    = request.form.get("title", "").strip()
         company  = request.form.get("company", "").strip()
@@ -54,6 +65,7 @@ def upload_jd():
 @job_bp.route("/jobs")
 @login_required
 def list_jobs():
+    """List all job descriptions created by the currently logged-in user."""
     jobs = JobDescription.query_by_user(current_user.user_id)
     return render_template("job/list.html", jobs=jobs)
 
@@ -61,6 +73,12 @@ def list_jobs():
 @job_bp.route("/jobs/<jd_id>")
 @login_required
 def view_jd(jd_id):
+    """
+    View the details and extracted skills of a specific job description.
+    
+    Only the owner or an admin can access this view.
+    Returns 404 if the jd_id does not exist in Firestore.
+    """
     from flask import abort
     jd = JobDescription.get(jd_id)
     if not jd:
@@ -74,6 +92,12 @@ def view_jd(jd_id):
 @job_bp.route("/jobs/<jd_id>/delete", methods=["POST"])
 @login_required
 def delete_jd(jd_id):
+    """
+    Permanently delete a job description from Firestore.
+    
+    Only the JD owner or an admin can perform this action.
+    Returns 404 if the jd_id does not exist.
+    """
     from flask import abort
     jd = JobDescription.get(jd_id)
     if not jd:
@@ -88,6 +112,12 @@ def delete_jd(jd_id):
 @job_bp.route("/sync-jobs", methods=["POST"])
 @login_required
 def sync_jobs():
+    """
+    Admin-only route to import job listings from an external mock board.
+    
+    Fetches mock jobs and saves them as JobDescription documents in Firestore
+    under the current admin user's account.
+    """
     if not current_user.is_admin():
         flash("Only admins can sync external jobs.", "danger")
         return redirect(url_for("job.list_jobs"))

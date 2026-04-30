@@ -1,3 +1,11 @@
+"""
+models/resume.py
+Firestore data model for uploaded candidate resumes.
+
+Stores parsed resume data including extracted skills, experience, education,
+and candidate contact details. Each document belongs to one user account.
+"""
+
 import uuid
 from datetime import datetime, timezone
 
@@ -5,6 +13,25 @@ def _gen_uuid():
     return str(uuid.uuid4())
 
 class Resume:
+    """
+    Represents a parsed resume uploaded by a recruiter or candidate.
+
+    Attributes:
+        resume_id (str):          Unique Firestore document ID.
+        user_id (str):            ID of the user who uploaded this resume.
+        filename (str):           Original uploaded file name.
+        file_path (str):          Server-side path where the file is stored.
+        raw_text (str):           Full extracted plain text from the document.
+        extracted_skills (str):   Comma-separated list of detected skills.
+        experience_years (float): Total years of experience detected.
+        education_level (str):    Highest qualification (e.g. 'Bachelors', 'Masters').
+        candidate_name (str):     Detected candidate name from the resume.
+        candidate_email (str):    Detected email address.
+        candidate_phone (str):    Detected phone number.
+        candidate_links (list):   Detected LinkedIn/GitHub profile URLs.
+        candidate_companies (list): Detected company names from NER.
+        uploaded_at (datetime):   UTC timestamp of upload.
+    """
     def __init__(self, resume_id=None, user_id="", filename="", file_path="", raw_text=None,
                  extracted_skills=None, experience_years=0.0, education_level=None,
                  candidate_name=None, candidate_email=None, candidate_phone=None,
@@ -30,11 +57,13 @@ class Resume:
             self.uploaded_at = uploaded_at
 
     def skills_list(self) -> list:
+        """Return the extracted_skills CSV string as a cleaned Python list."""
         if self.extracted_skills:
             return [s.strip() for s in self.extracted_skills.split(",") if s.strip()]
         return []
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """Serialize the Resume to a Firestore-compatible dictionary."""
         return {
             "resume_id": self.resume_id,
             "user_id": self.user_id,
@@ -53,7 +82,8 @@ class Resume:
         }
 
     @staticmethod
-    def from_dict(data):
+    def from_dict(data: dict) -> "Resume":
+        """Deserialize a Firestore document dict into a Resume instance."""
         return Resume(
             resume_id=data.get("resume_id"),
             user_id=data.get("user_id", ""),
@@ -71,16 +101,19 @@ class Resume:
             uploaded_at=data.get("uploaded_at")
         )
 
-    def save(self):
+    def save(self) -> None:
+        """Persist this Resume document to Firestore (upsert by resume_id)."""
         from app import db
         db.collection("resumes").document(self.resume_id).set(self.to_dict())
 
-    def delete(self):
+    def delete(self) -> None:
+        """Permanently delete this Resume and its Firestore document."""
         from app import db
         db.collection("resumes").document(self.resume_id).delete()
 
     @staticmethod
-    def get(resume_id):
+    def get(resume_id: str) -> "Resume | None":
+        """Fetch a single Resume by Firestore document ID. Returns None if not found."""
         from app import db
         doc = db.collection("resumes").document(resume_id).get()
         if doc.exists:
@@ -88,7 +121,8 @@ class Resume:
         return None
 
     @staticmethod
-    def query_by_user(user_id):
+    def query_by_user(user_id: str) -> list:
+        """Return all Resumes uploaded by the given user, sorted newest first."""
         from app import db
         docs = db.collection("resumes").where("user_id", "==", user_id).stream()
         resumes = [Resume.from_dict(doc.to_dict()) for doc in docs]
@@ -96,7 +130,8 @@ class Resume:
         return resumes
 
     @staticmethod
-    def get_all():
+    def get_all() -> list:
+        """Return all Resume documents in Firestore (admin use only)."""
         from app import db
         docs = db.collection("resumes").stream()
         return [Resume.from_dict(doc.to_dict()) for doc in docs]

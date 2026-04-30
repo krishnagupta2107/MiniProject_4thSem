@@ -21,6 +21,15 @@ match_bp = Blueprint("match", __name__)
 @login_required
 @rate_limit("run_match", limit=10, window=60)
 def run_match():
+    """
+    Run the resume-to-job matching pipeline.
+    
+    GET:  Render the job selection form.
+    POST: Fetch all user resumes, score each one against the selected JD using
+          the dual-engine NLP matcher, log evaluation metrics, and persist results.
+    
+    The match label is one of: Shortlisted (>=70), Maybe (>=45), Rejected (<45).
+    """
     jobs = JobDescription.query_by_user(current_user.user_id)
 
     if request.method == "POST":
@@ -110,6 +119,15 @@ def run_match():
 @match_bp.route("/matches/<jd_id>")
 @login_required
 def match_results(jd_id):
+    """
+    Display matching results for a specific job description.
+    
+    Fetches all MatchResult documents for the given JD and filters them
+    to only show the current user's own resumes. Also computes the
+    average relevance score across all matches.
+    
+    Returns 404 if the job description does not exist.
+    """
     from flask import abort
     jd = JobDescription.get(jd_id)
     if not jd:

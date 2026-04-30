@@ -17,17 +17,26 @@ main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 def index():
+    """Render the public landing page of the HireMatch application."""
     return render_template("index.html")
 
 
 @main_bp.route("/about")
 def about():
+    """Render the about/team page."""
     return render_template("about.html")
 
 
 @main_bp.route("/dashboard")
 @login_required
 def dashboard():
+    """
+    Render the main user dashboard.
+    
+    Fetches the user's resumes, job descriptions, and match results.
+    Computes skill frequency distributions for the chart widgets.
+    Only the 5 most recent items are passed per section to keep the UI clean.
+    """
     resumes   = Resume.query_by_user(current_user.user_id)
     job_descs = JobDescription.query_by_user(current_user.user_id)
 

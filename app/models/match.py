@@ -1,10 +1,33 @@
+"""
+models/match.py
+Firestore data model for MatchResult documents.
+
+Stores the output of a single resume-to-job scoring run, including the
+relevance score, shortlist label, matched/missing skills, and AI feedback.
+"""
+
 import uuid
 from datetime import datetime, timezone
 
-def _gen_uuid():
+def _gen_uuid() -> str:
+    """Generate a new unique identifier for Firestore document IDs."""
     return str(uuid.uuid4())
 
 class MatchResult:
+    """
+    Represents the result of matching a single resume against a job description.
+
+    Attributes:
+        match_id (str):         Unique Firestore document ID.
+        resume_id (str):        Foreign key to the Resume document.
+        jd_id (str):            Foreign key to the JobDescription document.
+        relevance_score (float):Computed score from 0 to 100.
+        shortlist_label (str):  One of 'Shortlisted', 'Maybe', or 'Rejected'.
+        matched_skills (str):   CSV of skills found in both resume and JD.
+        missing_skills (str):   CSV of required skills absent from the resume.
+        feedback (str):         HTML-formatted actionable improvement suggestions.
+        created_at (datetime):  UTC timestamp of when the match was computed.
+    """
     def __init__(self, match_id=None, resume_id="", jd_id="", relevance_score=0.0,
                  shortlist_label=None, matched_skills=None, missing_skills=None, created_at=None, feedback=None):
         self.match_id = match_id or _gen_uuid()
@@ -22,17 +45,20 @@ class MatchResult:
         else:
             self.created_at = created_at
 
-    def matched_skills_list(self):
+    def matched_skills_list(self) -> list:
+        """Return matched_skills CSV string as a cleaned Python list."""
         if self.matched_skills:
             return [s.strip() for s in self.matched_skills.split(",") if s.strip()]
         return []
 
-    def missing_skills_list(self):
+    def missing_skills_list(self) -> list:
+        """Return missing_skills CSV string as a cleaned Python list."""
         if self.missing_skills:
             return [s.strip() for s in self.missing_skills.split(",") if s.strip()]
         return []
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """Serialize the MatchResult to a Firestore-compatible dictionary."""
         return {
             "match_id": self.match_id,
             "resume_id": self.resume_id,
@@ -46,7 +72,8 @@ class MatchResult:
         }
 
     @staticmethod
-    def from_dict(data):
+    def from_dict(data: dict) -> "MatchResult":
+        """Deserialize a Firestore document dict into a MatchResult instance."""
         return MatchResult(
             match_id=data.get("match_id"),
             resume_id=data.get("resume_id", ""),
@@ -60,15 +87,18 @@ class MatchResult:
         )
 
     def save(self):
+        """Persist this MatchResult document to Firestore (upsert by match_id)."""
         from app import db
         db.collection("match_results").document(self.match_id).set(self.to_dict())
 
     def delete(self):
+        """Permanently delete this MatchResult from Firestore."""
         from app import db
         db.collection("match_results").document(self.match_id).delete()
 
     @staticmethod
-    def get(match_id):
+    def get(match_id: str) -> "MatchResult | None":
+        """Fetch a single MatchResult by its document ID."""
         from app import db
         doc = db.collection("match_results").document(match_id).get()
         if doc.exists:
@@ -76,7 +106,8 @@ class MatchResult:
         return None
 
     @staticmethod
-    def query_by_jd(jd_id):
+    def query_by_jd(jd_id: str) -> list:
+        """Return all MatchResults for a given job description, sorted by score descending."""
         from app import db
         docs = db.collection("match_results").where("jd_id", "==", jd_id).stream()
         matches = [MatchResult.from_dict(doc.to_dict()) for doc in docs]
@@ -84,25 +115,28 @@ class MatchResult:
         return matches
 
     @staticmethod
-    def query_by_resume(resume_id):
+    def query_by_resume(resume_id: str) -> list:
+        """Return all MatchResults associated with a given resume."""
         from app import db
         docs = db.collection("match_results").where("resume_id", "==", resume_id).stream()
         return [MatchResult.from_dict(doc.to_dict()) for doc in docs]
 
     @staticmethod
-    def get_all():
+    def get_all() -> list:
+        """Return all MatchResult documents in Firestore (admin use only)."""
         from app import db
         docs = db.collection("match_results").stream()
         return [MatchResult.from_dict(doc.to_dict()) for doc in docs]
 
-    # relational db jaisi property
     @property
     def resume(self):
+        """Lazy-load the linked Resume object via its resume_id foreign key."""
         from app.models.resume import Resume
         return Resume.get(self.resume_id)
 
     @property
     def job_description(self):
+        """Lazy-load the linked JobDescription object via its jd_id foreign key."""
         from app.models.job import JobDescription
         return JobDescription.get(self.jd_id)
 
