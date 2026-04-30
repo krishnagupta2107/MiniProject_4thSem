@@ -43,8 +43,10 @@ def run_match():
         # sabka score nikalte hai
         count = 0
         from datetime import datetime, timezone
+        from app.services.model_lifecycle import lifecycle_manager
         for r in resumes:
             result = score_resume_for_job(r, jd)
+            lifecycle_manager.log_metrics(r.resume_id, jd.jd_id, result.get("metrics", {}))
 
             # check karo pehle se hai kya match
             existing = None

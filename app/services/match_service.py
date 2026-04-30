@@ -68,6 +68,11 @@ def score_resume_for_job(resume, jd) -> dict:
     raw_score = (skill_score * 70.0) + (semantic_score * 20.0) + (exp_bonus * 10.0)
     base_score = round(min(raw_score, 100.0), 2)
 
+    # ===== DETAILED EVALUATION METRICS =====
+    precision = coverage
+    recall = skill_score
+    f1_score = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+
     # ===== FINAL SCORE & FALLBACK EXPLANATION =====
     label = _get_label(base_score)
     return {
@@ -76,6 +81,11 @@ def score_resume_for_job(resume, jd) -> dict:
         "matched": matched,
         "missing": missing,
         "explanation": _build_explanation(base_score, matched, missing, exp_bonus, jd_years),
+        "metrics": {
+            "precision": round(precision, 2),
+            "recall": round(recall, 2),
+            "f1_score": round(f1_score, 2)
+        }
     }
 
 

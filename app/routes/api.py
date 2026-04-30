@@ -1,10 +1,11 @@
 """
 routes/api.py
-Simple JSON API endpoints for external integrations.
-All under /api prefix.
+JSON API endpoints for external integrations and data parsing.
+All routes are prefixed with /api.
 """
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
+from functools import wraps
 
 from app.models.resume import Resume
 from app.models.job    import JobDescription
@@ -13,10 +14,33 @@ from app.utils.helpers import rate_limit
 
 api_bp = Blueprint("api", __name__)
 
+def require_api_key(f):
+    """
+    Decorator to enforce API key authorization.
+    Clients must provide 'X-API-Key' in the header matching the server's API_KEY (or SECRET_KEY).
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        api_key = request.headers.get("X-API-Key")
+        # In a real app, use a dedicated API keys table. Here we use SECRET_KEY as a quick token.
+        if api_key and api_key == current_app.config.get("SECRET_KEY"):
+            return f(*args, **kwargs)
+        return jsonify({"error": "Unauthorized. Invalid or missing X-API-Key header."}), 401
+    return decorated
 
 @api_bp.route("/parse-resume", methods=["POST"])
 @rate_limit("api_parse", limit=20, window=60)
+@require_api_key
 def api_parse_resume():
+    """
+    Parse raw resume text and extract candidate information.
+    
+    Expected JSON payload:
+        { "text": "Raw resume text here..." }
+        
+    Returns:
+        JSON response with extracted skills, experience, and education.
+    """
     data = request.get_json()
     if not data or not data.get("text"):
         return jsonify({"error": "text field is required"}), 400
@@ -35,7 +59,17 @@ def api_parse_resume():
 
 @api_bp.route("/parse-jd", methods=["POST"])
 @rate_limit("api_parse", limit=20, window=60)
+@require_api_key
 def api_parse_jd():
+    """
+    Parse raw job description text and extract requirements.
+    
+    Expected JSON payload:
+        { "text": "Raw JD text...", "title": "Optional Title" }
+        
+    Returns:
+        JSON response with required skills and experience requirements.
+    """
     data = request.get_json()
     if not data or not data.get("text"):
         return jsonify({"error": "text field is required"}), 400
@@ -51,8 +85,13 @@ def api_parse_jd():
 
 
 @api_bp.route("/resumes", methods=["GET"])
+@require_api_key
 def api_list_resumes():
-    resumes = Resume.query.all()
+    """
+    Retrieve a list of all parsed resumes in the system.
+    Requires API key authorization to prevent data leaks.
+    """
+    resumes = Resume.get_all()
     return jsonify({"resumes": [
         {
             "resume_id":      r.resume_id,
@@ -60,15 +99,20 @@ def api_list_resumes():
             "skills":         r.skills_list(),
             "experience":     r.experience_years,
             "education":      r.education_level,
-            "uploaded_at":    r.uploaded_at.isoformat(),
+            "uploaded_at":    r.uploaded_at.isoformat() if hasattr(r.uploaded_at, 'isoformat') else r.uploaded_at,
         }
         for r in resumes
     ]})
 
 
 @api_bp.route("/jobs", methods=["GET"])
+@require_api_key
 def api_list_jobs():
-    jobs = JobDescription.query.all()
+    """
+    Retrieve a list of all job descriptions in the system.
+    Requires API key authorization to prevent data leaks.
+    """
+    jobs = JobDescription.get_all()
     return jsonify({"jobs": [
         {
             "jd_id":           j.jd_id,

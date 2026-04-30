@@ -137,7 +137,7 @@ def google_auth():
         return {"success": False, "error": "No token provided"}, 400
 
     try:
-        decoded_token = fb_auth.verify_id_token(token)
+        decoded_token = fb_auth.verify_id_token(token, clock_skew_seconds=60)
         email = decoded_token.get("email")
         name = decoded_token.get("name", "Google User")
 

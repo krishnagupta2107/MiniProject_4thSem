@@ -5,6 +5,8 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+🌍 **Live Deployment:** [https://resume-matcher-c8de.onrender.com/](https://resume-matcher-c8de.onrender.com/)
+
 A highly rigorous, dual-engine (NLP + LLM) platform built to match candidates to Job Descriptions intelligently, strictly penalizing vague keyword-stuffing and rewarding deep, implicitly required technical skills. Built collaboratively by **Krishna Gupta, Anushka Bansal, and Mahak Bhatia** (Team 43).
 
 ---

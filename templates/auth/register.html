@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-<!-- pehli bar aane k lia rasta -->
+<!-- Registration Entry Point -->
 {% block title %}Register – HireMatch{% endblock %}
 
 {% block content %}
@@ -17,7 +17,7 @@
         <p class="text-muted fw-medium fs-6 mb-0">It only takes a minute</p>
       </div>
 
-      <!-- firebase google button bypass sbse easy system -->
+      <!-- Google OAuth Sign-Up Button -->
       <button type="button" class="btn btn-white border w-100 py-2 mb-4 fw-bold text-dark d-flex align-items-center justify-content-center hover-lift shadow-sm rounded-pill bg-white" id="googleAuthBtn">
           <i class="fab fa-google text-danger me-2 fs-5"></i> Register with Google
       </button>
@@ -28,9 +28,9 @@
          <hr class="flex-grow-1 border-secondary m-0">
       </div>
 
-      <!-- purani standard rassi of inputs form ki -->
+      <!-- Standard Email/Password Registration Form -->
       <form method="POST" action="{{ url_for('auth.register') }}" novalidate>
-        <!-- form tokend csrf zaroori islie ye mastur chiz h -->
+        <!-- CSRF Token for Security -->
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
         <div class="mb-3">
@@ -67,7 +67,7 @@
           </div>
         </div>
 
-        <!-- mast bada sign up ka dabblet -->
+        <!-- Primary Sign-Up Button -->
         <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm hover-lift fw-bold fs-6 mb-4">
           Complete Sign Up <i class="fas fa-user-plus ms-2 fs-7"></i>
         </button>
@@ -87,7 +87,7 @@
 
 {% block scripts %}
 <script type="module">
-  // same bhai auth setup idhr lia jo login mr daala
+  // Firebase Auth module imports
   import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   
   const googleBtn = document.getElementById("googleAuthBtn");
@@ -113,12 +113,12 @@
               if (data.success) {
                   window.location.href = data.redirect;
               } else {
-                  alert("Register via Google me error he vai: " + data.error);
+                  alert("Google Authentication failed: " + data.error);
               }
           } catch (error) {
               console.error(error);
               if (error.code !== "auth/popup-closed-by-user") {
-                  alert("Khachra code for popup login: " + error.message);
+                  alert("Authentication popup error: " + error.message);
               }
           }
       });
