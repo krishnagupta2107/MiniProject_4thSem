@@ -1,32 +1,32 @@
 {% extends "base.html" %}
-<!-- upar dikhne wala naam -->
+<!-- Page Title -->
 {% block title %}Dashboard – HireMatch{% endblock %}
 
 {% block content %}
 <div class="container py-5">
 
-  <!-- welcome msg aur shortcuts wala section yaha hai -->
+  <!-- Welcome message and shortcut buttons section -->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-4">
     <div>
       <h2 class="fw-bolder mb-2 text-dark" style="letter-spacing: -0.02em;">Welcome back, {{ current_user.full_name.split()[0] }} <span class="text-warning">👋</span></h2>
       <p class="text-muted mb-0 fw-medium fs-6">Here's your recruiting and matching overview for today.</p>
     </div>
     <div class="d-flex gap-2 gap-sm-3 flex-wrap">
-      <!-- ek add resume ka chota sa secondary button -->
+      <!-- Secondary button to add resume -->
       <a href="{{ url_for('resume.upload_resume') }}" class="btn btn-white shadow-sm fw-bold px-4 rounded-pill hover-lift border d-flex align-items-center bg-white text-dark">
         <i class="fas fa-plus me-2 text-primary"></i> Add Resume
       </a>
-      <!-- bada primary gradient button run match karne ke liye -->
+      <!-- Primary gradient button to run match -->
       <a href="{{ url_for('match.run_match') }}" class="btn btn-primary shadow-sm fw-bold px-4 rounded-pill hover-lift d-flex align-items-center">
         <i class="fas fa-bolt me-2 text-warning"></i> Run Match
       </a>
     </div>
   </div>
 
-  <!-- total count dikhane wale 3 cards -->
+  <!-- Top 3 stat cards -->
   <div class="row g-4 mb-5">
     
-    <!-- resumes ka ginti -->
+    <!-- Total resumes count -->
     <div class="col-12 col-sm-6 col-lg-4">
       <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
         <div class="card-body p-4 d-flex align-items-center gap-4">
@@ -41,7 +41,7 @@
       </div>
     </div>
     
-    <!-- jobs ki ginti -->
+    <!-- Total jobs count -->
     <div class="col-12 col-sm-6 col-lg-4">
       <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
         <div class="card-body p-4 d-flex align-items-center gap-4">
@@ -56,7 +56,7 @@
       </div>
     </div>
     
-    <!-- matches kitne hue total -->
+    <!-- Total matches count -->
     <div class="col-12 col-lg-4">
       <div class="card border-0 shadow-sm h-100 hover-lift bg-white">
         <div class="card-body p-4 d-flex align-items-center gap-4">
@@ -72,7 +72,7 @@
     </div>
   </div>
 
-  <!-- bich me graph (chart) dikhane wala naya canvas container -->
+  <!-- Chart canvas container for analytics -->
   <div class="row mb-5">
     <div class="col-12">
       <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
@@ -89,7 +89,7 @@
     </div>
   </div>
 
-  <!-- list views (hal filhal k resumes aur jobs) -->
+  <!-- List views for recent resumes and jobs -->
   <div class="row g-4">
 
     <!-- left list: recently added resumes -->
@@ -123,7 +123,7 @@
               {% endfor %}
             </div>
           {% else %}
-            <!-- agar koi bhi resume nai hai to yaha dhikhao -->
+            <!-- Display if no resumes are available -->
             <div class="text-center py-5 text-muted">
               <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
                 <i class="fas fa-file-circle-plus fa-2x text-secondary opacity-50"></i>
@@ -165,7 +165,7 @@
               {% endfor %}
             </div>
           {% else %}
-            <!-- agar koi job hi nai hai to idhar dhikhao -->
+            <!-- Display if no jobs are available -->
             <div class="text-center py-5 text-muted">
               <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
                 <i class="fas fa-briefcase fa-2x text-secondary opacity-50"></i>
@@ -178,7 +178,7 @@
       </div>
     </div>
 
-    <!-- thoda niche recent matches ka table (agar kuch match hue hai tabhi dikhega) -->
+    <!-- Recent matches table (displayed only if matches exist) -->
     {% if recent_matches %}
     <div class="col-12 mt-4">
       <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
@@ -199,16 +199,16 @@
               <tbody class="border-top-0">
                 {% for m in recent_matches %}
                 <tr>
-                  <!-- candidate ka naam aur chota id -->
+                  <!-- Candidate name and ID -->
                   <td class="ps-4 py-3">
                     <div class="fw-bold text-dark">{{ m.resume.candidate_name or m.resume.filename }}</div>
                     <div class="text-muted small">ID: #{{ m.resume_id|string|truncate(8, True, '') }}</div>
                   </td>
-                  <!-- konsi job apply kri hai wo dekho -->
+                  <!-- Target job applied for -->
                   <td class="py-3">
                     <div class="fw-medium text-dark">{{ m.job_description.title }}</div>
                   </td>
-                  <!-- percentage bar ekdum mast wala jske lie bootstrap classes hai -->
+                  <!-- Progress bar with dynamic colors based on score -->
                   <td class="py-3">
                     <div class="d-flex align-items-center gap-3">
                       <div class="progress flex-grow-1 bg-light rounded-pill" style="height: 8px; max-width: 120px; box-shadow: none;">
@@ -221,7 +221,7 @@
                       <span class="fw-bold fs-6">{{ m.relevance_score }}%</span>
                     </div>
                   </td>
-                  <!-- kon pass kon fail wala column -->
+                  <!-- Shortlist status column -->
                   <td class="pe-4 py-3 text-end">
                     <span class="badge border
                       {% if m.shortlist_label == 'Shortlisted' %}bg-success bg-opacity-10 text-success border-success
@@ -245,11 +245,11 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- chart js ka script CDN se arha hai -->
+<!-- Chart JS Script via CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // doughnut chart banane ke liye values yaha generate kar rhe
+    // Generate values for the doughnut chart
     const labels = ["Shortlisted", "Maybe", "Rejected"];
     const counts = [0, 0, 0];
     
@@ -260,10 +260,10 @@ document.addEventListener("DOMContentLoaded", () => {
         {% endif %}
     {% endfor %}
     
-    // agar minimum ek entry hogi to chart dikhega bhai nahi to warning msg de denge
+    // Only render chart if there is at least one entry, else show warning message
     if (counts.reduce((a,b)=>a+b, 0) > 0) {
         const ctx = document.getElementById('matchAnalyticsChart').getContext('2d');
-        // gradient colors code me pass krunga mst lagega chart
+        // Apply modern gradient colors to the chart
         const greenGrad = ctx.createLinearGradient(0,0,0,400); greenGrad.addColorStop(0, '#22c55e'); greenGrad.addColorStop(1, '#16a34a');
         const yellowGrad = ctx.createLinearGradient(0,0,0,400); yellowGrad.addColorStop(0, '#facc15'); yellowGrad.addColorStop(1, '#ca8a04');
         const redGrad = ctx.createLinearGradient(0,0,0,400); redGrad.addColorStop(0, '#ef4444'); redGrad.addColorStop(1, '#dc2626');
@@ -289,7 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     } else {
-        // jab data na mile to error wala div idhar chipka do
+        // Render empty state if no data is found
         document.getElementById('matchAnalyticsChart').parentElement.innerHTML = 
             "<div class='text-muted d-flex flex-column align-items-center justify-content-center h-100'>" +
             "<i class='fas fa-chart-pie fa-2x mb-2 opacity-25'></i>" +
@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <style>
-/* choti si css class list items ko list-hover krne pe background dark kr degi */
+/* CSS class to darken background on list item hover */
 .p-list-hover { transition: all 0.2s; }
 .p-list-hover:hover { background-color: #f8fafc; }
 </style>
